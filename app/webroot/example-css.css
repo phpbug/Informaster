@@ -1,0 +1,33 @@
+.base-class {
+    background: transparent url('base-class.png') no-repeat;
+    height: 45px;
+    width: 45px;
+}
+
+.class-1 {
+    background-position: -45px 0;
+}
+
+.class-2 {
+    background-position: -90px 0;
+}
+
+.class-3 {
+    background-position: -135px 0;
+}
+
+.class-4 {
+    background-position: -180px 0;
+}
+
+.class-5 {
+    background-position: -225px 0;
+}
+
+.class-6 {
+    background-position: -270px 0;
+}
+
+.class-7 {
+    background-position: -315px 0;
+}

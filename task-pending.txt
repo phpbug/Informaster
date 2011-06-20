@@ -1,0 +1,28 @@
+
+Need to get it done
+=================================================
+
+1. Need to come out a UI that let Lee to check through the calculation.
+2. If pioneer bring more than one member in current month, his/her chances of getting group sales will be bring forward.
+   #Remember to change user deleted the member infront 
+
+   #Remember to change the function definiation in system calculation, this is about the setting the flags
+   - Function definiation is done, need to test out.
+3. If possible try added a created field for the hierarchy report later use on distinct   
+
+Bug
+=================================================
+
+1. Compression
+2. In sales table found out a few of the records the data not tally.
+
+
+Testing
+================================================
+
+1. Testing on bringing over member from pioneer
+2. Testing calculation
+3. Testing group sales member
+
+
+ 

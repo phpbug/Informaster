@@ -1,0 +1,41 @@
+
+.inputStyling
+{
+  padding: 9px;
+	border: solid 1px #E5E5E5;
+	outline: 0;
+	font: normal 13px/100% Verdana, Tahoma, sans-serif;
+	background: #FFFFFF url(../img/bg.png) repeat-x scroll left top;
+} 
+
+
+.submit
+{
+  text-align:center;
+  background: transparent url(../img/ie-button.png) top left repeat-x;
+  width: 68px;
+  height: 37px;
+} 
+
+
+#footer
+{
+	clear: both;
+	padding: 20px;
+	text-align:center;
+	font-family:Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+	background: #464646 none repeat scroll 0 0;
+	height: 1%;
+	color: #999999;
+	font-size:12px;
+	width:99%;
+	font-style:italic;
+	
+}
+
+#footer p
+{
+  margin-top: 15px;
+  padding: 15px 0 15px 10px;
+  height:10px;
+}
