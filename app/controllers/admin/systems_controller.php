@@ -665,7 +665,7 @@ class SystemsController extends AdminAppController
    
    $insurance_paid = null;
    $insurance_paid = $_sales_info['ViewSaleReport']['insurance_paid'];
-
+   
    $clean_calculation[] = $this->updateParentCommissionEarned(
    
    $per_parent,

@@ -48,11 +48,20 @@
     clearTimeout(keyDetectionID);
     $.get('<?php echo $this->webroot;?>admin/sales/getbaddebt',{member_id:$("#SaleMemberId").val(),insurance_paid:$("#SalesInsurancePurchased").val()},function(data){
     $("#debt").empty();
+    $("#warning").fadeOut();
      $("#debt").html(data);
      $("#debt").append('<dt>&nbsp;</dt>');
      if(data != "")
      {
       $("#debt-form-hideout").empty();
+     }
+     else
+     {
+      var number_of_maintain = (parseInt($("#SalesInsurancePurchased").val())/100);
+      if(number_of_maintain > 1)
+      {
+       $("#warning").fadeIn();
+      }
      }  
     },'text');
    }

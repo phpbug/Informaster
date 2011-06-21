@@ -941,7 +941,7 @@ class HierachiesController extends AdminAppController
  /**
   * @Objective : To continously display table row..
   **/
- function contRowDisplay(&$html,$direct_profits,$page_break,$start_loop=0)
+ function contRowDisplay(&$html,$direct_profits,$page_break,$start_loop=0,$prev_member_id=null,$prev_target_month=null,$prev_insurance_paid=null)
  {
  
   if(!isset($direct_profits[$start_loop]['ViewSaleReport']['total_payment']) | (($start_loop)%25) == 24 )
@@ -955,6 +955,31 @@ class HierachiesController extends AdminAppController
    {
     $start_loop = ((($page_break*25))-1);
    }
+  }
+    
+  if(!isset($prev_member_id,$prev_target_month,$prev_insurance_paid))
+  {
+   $prev_member_id = $direct_profits[$start_loop]['ViewSaleReport']['member_id'];
+   $prev_target_month = $direct_profits[$start_loop]['ViewSaleReport']['target_month'];
+   $prev_insurance_paid = $direct_profits[$start_loop]['ViewSaleReport']['total_payment'];  
+  }
+  else
+  {
+    
+    //If next records is the same then loop again until it's not the same.
+    if(
+    $prev_member_id == $direct_profits[$start_loop]['ViewSaleReport']['member_id'] && 
+    $prev_target_month == $direct_profits[$start_loop]['ViewSaleReport']['target_month'] && 
+    $prev_insurance_paid == $direct_profits[$start_loop]['ViewSaleReport']['total_payment'])
+    {
+     return $this->contRowDisplay($html,$direct_profits,$page_break,$start_loop+=1,$prev_member_id,$prev_target_month,$prev_insurance_paid);
+    }
+    else
+    {
+     $prev_member_id = $direct_profits[$start_loop]['ViewSaleReport']['member_id'];
+     $prev_target_month = $direct_profits[$start_loop]['ViewSaleReport']['target_month'];
+     $prev_insurance_paid = $direct_profits[$start_loop]['ViewSaleReport']['total_payment'];
+    }
   }
   
   $html .= '
@@ -970,7 +995,7 @@ class HierachiesController extends AdminAppController
    <td align="right" width="12.5%">'.number_format((0.15*$direct_profits[$start_loop]['ViewSaleReport']['total_payment']), 2, '.', ',').'</td>
   </tr>';
   
-  return $this->contRowDisplay($html,$direct_profits,$page_break,$start_loop+=1);
+  return $this->contRowDisplay($html,$direct_profits,$page_break,$start_loop+=1,$prev_member_id,$prev_target_month,$prev_insurance_paid);
   
  }
  

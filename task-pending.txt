@@ -2,13 +2,11 @@
 Need to get it done
 =================================================
 
+0. In report, double check with paid Contributor table make sure if cases such as make 2 maintenance a day will occur in  PDF report
+
 1. Need to come out a UI that let Lee to check through the calculation.
 2. If pioneer bring more than one member in current month, his/her chances of getting group sales will be bring forward.
    #Remember to change user deleted the member infront 
-
-   #Remember to change the function definiation in system calculation, this is about the setting the flags
-   - Function definiation is done, need to test out.
-3. If possible try added a created field for the hierarchy report later use on distinct   
 
 Bug
 =================================================
@@ -23,6 +21,9 @@ Testing
 1. Testing on bringing over member from pioneer
 2. Testing calculation
 3. Testing group sales member
-
-
+4. Create 7 levels of member chain.
+5. Use system to calculate the commission according to the period to see does everyone get the commission right.
+6. Try if a member without pulling in a new member she/he will still get through the checking and gain bonus?
+7. If the member doesn't maintain will he/she still able to get the commission calculated by system?
+8. Test compression of each level starting from the bottom till the top.
  

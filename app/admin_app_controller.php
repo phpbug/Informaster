@@ -319,7 +319,7 @@ var $hunt_date_before;
   }
   
   // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  
+   
   $paidContributor['PaidContributor']['level'] = $hierarchy_level; 
   $paidContributor['PaidContributor']['sponsor_member_id'] = $per_parent;
   $paidContributor['PaidContributor']['member_id'] = $payee;    

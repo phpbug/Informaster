@@ -38,6 +38,7 @@
    echo $form->radio('maintain',$options,$attribute); 
    ?>
    </dd>
+   <span class="hintz" id="warning" style="display:none;">* Please select the correct <b>month for maintenance</b></span>
    <dt>&nbsp;</dt>
    <dt><b>5</b>. Payment cleared : </dt>
    <dd>
