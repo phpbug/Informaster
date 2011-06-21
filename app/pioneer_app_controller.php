@@ -14,7 +14,6 @@ class PioneerAppController extends Controller
                          'Hierarchy',
                          'Sale',
                          'ViewHierarchyManagementReport',
-                         'Debt',
                          'ViewMemberReport',
                          'ViewSaleReport',
                          'Nationality',

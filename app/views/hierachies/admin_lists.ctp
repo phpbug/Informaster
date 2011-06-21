@@ -92,7 +92,7 @@ $(document).ready(function(){
      echo '<td>'.ife(!empty($per_parent['ViewHierarchyManagementReport']['sponsor_name']),$html->link(ucwords($per_parent['ViewHierarchyManagementReport']['sponsor_name']),array('controller'=>'hierachies','action'=>'downline/'.$per_parent['ViewHierarchyManagementReport']['sponsor_member_id'])),'-').'</td>';
     }
                         
-    echo '<td align="center">'.ife(!empty($per_parent['ViewHierarchyManagementReport']['sponsor_member_id']),'IFM - '.$per_parent['ViewHierarchyManagementReport']['sponsor_member_id'],' - ').'</td>'; 
+    echo '<td align="center">'.ife(strtoupper($per_parent['ViewHierarchyManagementReport']['sponsor_member_id']{0}<>"P"),'IFM - '.$per_parent['ViewHierarchyManagementReport']['sponsor_member_id'],' - ').'</td>'; 
     
     if($isPioneer)
     {       

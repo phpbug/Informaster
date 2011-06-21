@@ -596,9 +596,19 @@ class SystemsController extends AdminAppController
   //echo '----------------**End Of Recursive**--------------------';
   //echo '<br />';
   
+  $parent = array_unique($parent);
+  
+  echo 'Child :: '.$payee;
+  echo '<br />';
+  pr($parent);
+  
   if(empty($parent[0]))
   {
+   echo 'Goes Into Payee Report Function';
+   echo '<br />';
    $this->updatePayeeSalesReport($payee,$default_period_start,$default_period_until,$member_target_month);
+   echo '<br />';
+   echo '<br />';
    return false;
   }
   
@@ -606,7 +616,7 @@ class SystemsController extends AdminAppController
   * Did some filter making sure is the right parents
   ************************************************************************************************************************************************************/
   
-  $parent = array_unique($parent);
+  
  
   /***********************************************************************************************************************************************************
   * End of filtering
@@ -683,6 +693,8 @@ class SystemsController extends AdminAppController
   if(isset($clean_calculation[0]))
   {
    $this->updatePayeeSalesReport($payee,$default_period_start,$default_period_until,$member_target_month);
+   echo 'Done';
+   echo '<br />';
   }
   
  }//end of function
@@ -790,6 +802,9 @@ class SystemsController extends AdminAppController
    $per_sale['Sale']['calculated']  = 'Y';
    $per_sale['Sale']['payment_clear']  = 'Y';
    
+   echo 'Updating Payee Calculated Status :: '.$payee;
+   echo '<br />';
+
    $this->Sale->create();
    if(!$this->Sale->save($per_sale,false))
    {
@@ -855,40 +870,50 @@ class SystemsController extends AdminAppController
    *2. Must bring in additional account for the following month.   
    */   
    
+    if($parent == '0107552527')
+   {
+    exit;
+   }  
+   
    $conditions = array(
                        'Member.sponsor_member_id' => $parent,
                        'Sale.payment_clear' => 'Y',
                        'DATE_FORMAT(Sale.target_month,"%Y%m%d") >= ' => $default_period_start,
                        'DATE_FORMAT(Sale.target_month,"%Y%m%d") <= ' => $default_period_until
-                      );
-                                                                
+                      );                                                             
    $this_month_sales_or_maintain = $this->Sale->find('count',array('conditions'=>$conditions));
    
-   /* 
+
+ 
    //If no sales detected on top for the parent , the portion of the codes below will be executed
    echo 'Q-aing : '.$parent;
    echo '<br />';
-   echo 'Brought over : '.(int)$this->getBroughtOver($parent);
+   echo 'Brought over : '.@(int)$this->getBroughtOver($parent);
    echo '<br />';
-   echo 'Maintain : '.(int)$sales_counter;
+   echo 'Maintain : '.@(int)$this_month_sales_or_maintain;
    echo '<br />';
    echo 'Qualify';
    echo '<br />';
-   */
-   
+  
+    
+  
+    
    if( $this->getBroughtOver($parent,$default_period_start,$default_period_until) > 0 && $this_month_sales_or_maintain > 0 )
    {
-     /*
+     
      echo 'Qualify';
      echo '<br />';
      echo '<br />';
-     */ 
+    
      return true;//He/She is eligible to get the commission as he/she has brought over 
    }
    
-   //echo 'Dissqualify';
-   //echo '<br />';
-   //echo '<br />';  
+   echo 'Dissqualify';
+   echo '<br />';
+   echo '<br />';  
+   
+   
+   
    return false;
    
  }
@@ -905,8 +930,7 @@ class SystemsController extends AdminAppController
    }
    
    $conditions = array('sponsor_member_id' => $per_parent,
-                       'DATE_FORMAT(default_period_start,"%Y%m%d")' => date("Ymd",strtotime($default_period_start)),
-                       'DATE_FORMAT(default_period_until,"%Y%m%d")' => date("Ymd",strtotime($default_period_until))
+                       'utilized' => 'N'
                        );
                        
    $management_info = $this->BroughtOverManagement->find('count',array('conditions'=>$conditions));
