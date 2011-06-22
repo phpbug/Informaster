@@ -1,0 +1,98 @@
+[12-Jul-2010 21:17:18] PHP Fatal error:  Call to undefined method stdClass::send() in /home/ifmucom/public_html/app/controllers/admin/agents_controller.php on line 70
+[12-Jul-2010 21:42:32] PHP Parse error:  syntax error, unexpected T_IF in /home/ifmucom/public_html/app/controllers/admin/agents_controller.php on line 48
+[12-Jul-2010 21:42:39] PHP Parse error:  syntax error, unexpected T_IF in /home/ifmucom/public_html/app/controllers/admin/agents_controller.php on line 48
+[24-Jul-2010 01:28:08] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING, expecting ')' in /home/ifmucom/public_html/app/views/elements/admin_side_menu.ctp on line 37
+[24-Jul-2010 01:31:59] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING, expecting ')' in /home/ifmucom/public_html/app/views/elements/admin_side_menu.ctp on line 15
+[24-Jul-2010 01:32:01] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING, expecting ')' in /home/ifmucom/public_html/app/views/elements/admin_side_menu.ctp on line 15
+[24-Jul-2010 01:32:11] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING, expecting ')' in /home/ifmucom/public_html/app/views/elements/admin_side_menu.ctp on line 15
+[24-Jul-2010 01:33:04] PHP Parse error:  syntax error, unexpected '(', expecting '{' in /home/ifmucom/public_html/app/controllers/admin/hierachy_controller.php on line 4
+[24-Jul-2010 01:33:05] PHP Parse error:  syntax error, unexpected '(', expecting '{' in /home/ifmucom/public_html/app/controllers/admin/hierachy_controller.php on line 4
+[27-Jul-2010 14:04:15] PHP Fatal error:  Call to a member function find() on a non-object in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 328
+[27-Jul-2010 15:20:40] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 344
+[27-Jul-2010 15:20:41] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 344
+[27-Jul-2010 15:20:42] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 344
+[27-Jul-2010 15:20:42] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 344
+[27-Jul-2010 15:20:43] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 344
+[27-Jul-2010 15:26:04] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 276
+[27-Jul-2010 15:26:04] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 276
+[27-Jul-2010 15:26:05] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 276
+[27-Jul-2010 15:26:10] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 276
+[27-Jul-2010 15:44:11] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 363
+[27-Jul-2010 15:44:12] PHP Parse error:  syntax error, unexpected '}' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 363
+[27-Jul-2010 15:44:35] PHP Fatal error:  Cannot break/continue 1 level in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 261
+[27-Jul-2010 15:44:51] PHP Fatal error:  Cannot break/continue 1 level in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 262
+[29-Jul-2010 18:27:41] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 400
+[29-Jul-2010 18:48:43] PHP Fatal error:  Cannot use string offset as an array in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 336
+[29-Jul-2010 18:48:57] PHP Fatal error:  Cannot use string offset as an array in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 337
+[29-Jul-2010 18:52:26] PHP Fatal error:  Cannot use string offset as an array in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 337
+[29-Jul-2010 18:55:11] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 117
+[29-Jul-2010 18:55:12] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 117
+[29-Jul-2010 18:55:13] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/controllers/admin/sales_controller.php on line 334
+[12-Sep-2010 13:21:50] PHP Parse error:  syntax error, unexpected $end, expecting T_VARIABLE or '$' in /home/ifmucom/public_html/app/controllers/admin/members_controller.php on line 218
+[12-Sep-2010 13:22:45] PHP Parse error:  syntax error, unexpected $end, expecting ']' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:22:45] PHP Parse error:  syntax error, unexpected $end, expecting ']' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:22:46] PHP Parse error:  syntax error, unexpected $end, expecting ']' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:22:46] PHP Parse error:  syntax error, unexpected $end, expecting ']' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:22:46] PHP Parse error:  syntax error, unexpected $end, expecting ']' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:22:46] PHP Parse error:  syntax error, unexpected $end, expecting ']' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:27:51] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 99
+[12-Sep-2010 13:27:51] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 99
+[12-Sep-2010 13:28:17] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:17] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:17] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:17] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:17] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:17] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:17] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:17] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:18] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:18] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:18] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:28:18] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:29:49] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:29:49] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:29:49] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:29:49] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:29:49] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:29:49] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:08] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:08] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:08] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:08] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:09] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:09] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:09] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:30:09] PHP Parse error:  syntax error, unexpected $end in /home/ifmucom/public_html/app/models/member.php on line 456
+[12-Sep-2010 13:34:24] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/controllers/admin/members_controller.php on line 99
+[12-Sep-2010 13:34:24] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/controllers/admin/members_controller.php on line 429
+[12-Sep-2010 13:34:24] PHP Parse error:  syntax error, unexpected T_STRING in /home/ifmucom/public_html/app/controllers/admin/members_controller.php on line 429
+[12-Sep-2010 13:35:37] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:37] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:37] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:37] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:35:38] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:33] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:34] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:34] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:34] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:34] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:34] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/ifmucom/public_html/app/models/member.php on line 371
+[12-Sep-2010 13:37:34] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/ifmucom/public_html/app/models/member.php on line 371

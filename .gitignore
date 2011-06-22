@@ -1,0 +1,5 @@
+app/tmp/cache/*
+app/tmp/sessions/*
+app/tmp/views/*
+app/tmp/logs/*
+app/tmp/sessions/*

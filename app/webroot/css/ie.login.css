@@ -1,0 +1,107 @@
+*
+{
+  margin:0;
+  padding:0;
+}
+
+body.login
+{
+  /*border-top-color:#464646;*/
+  text-align:center;
+}
+
+#login form p { margin-bottom:0!important;}
+
+/*Login text such as Username , Password*/
+.login-text
+{
+  color:#777777;
+  font-size:13px;
+  float:left;
+  margin-left:4px;
+  clear:left;  
+}
+
+/*Login input field such as for Username , Password*/
+.login-text input
+{
+  float:left;
+  clear:left;
+}
+
+/*For the submit button at the login panel*/
+form .submit
+{
+	cursor:pointer;
+	font-weight:bold;
+	line-height:1;
+	padding:0.6em 0.5em 0.5em 0.5em;
+	text-align:center;
+}
+
+#nav 
+{
+  text-shadow:0 1px 0 #FFFFFF;
+}
+
+#backtoadmin 
+{
+  left:15px;
+  position:absolute;
+  text-decoration:none;
+  bottom:750px;
+  color:black!important; 
+}
+
+#login 
+{
+  margin:7em auto 0 auto;
+  width:320px;
+}
+
+#authMessage, .message 
+{
+  -moz-border-radius-bottomleft:3px;
+  -moz-border-radius-bottomright:3px;
+  -moz-border-radius-topleft:3px;
+  -moz-border-radius-topright:3px;
+  border-style:solid;
+  border-width:1px;
+  margin:0 0 16px 8px;
+  padding:12px;
+  background-color:#FFEBE8;
+  border-color:#CC0000;
+}
+
+#footer
+{
+  margin: 10pt auto 0pt auto;  
+  width: 320px;
+  text-align:center;
+}
+
+
+#nav 
+{
+  margin:0 0 0 8px;
+  padding:16px;
+}
+
+
+#user_pass, #user_login, #user_email 
+{
+  -moz-background-clip:border;
+  -moz-background-inline-policy:continuous;
+  -moz-background-origin:padding;
+  background:#FBFBFB none repeat scroll 0 0;
+  border:1px solid #E5E5E5;
+  font-size:24px;
+  margin-bottom:16px;
+  margin-right:6px;
+  margin-top:2px;
+  padding:3px;
+  width:97%;
+}
+
+.clear {clear:both;}
+input {color:#555555;}
