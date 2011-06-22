@@ -526,7 +526,7 @@ class SystemsController extends AdminAppController
   );
     
   /***********************************************************************************************************************************************************
-  * Conditions #1 : If the payee had a late payment, her/his direct profit is earning the commission and will not gain any from leveling bonus.
+  * Conditions #1 : If the payee had a late payment, her/his direct profit is earning for sure and will not gain any commission from leveling bonus.
   ************************************************************************************************************************************************************/
   
   if($this->isPassedCommissionNoCount == false && 
