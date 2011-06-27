@@ -163,9 +163,11 @@ class MembersController extends AdminAppController
       case "birthday":
       case "language":
       case "updated":
+
        continue;
       break;
       //----------------------
+      
       case "nationality_id":
       $untouched_fields[] = "Nationality.nationality";
       $fields[] = '"Nationality"';
@@ -193,13 +195,21 @@ class MembersController extends AdminAppController
     }
 
     $content = implode(",",$fields)."\n";
-
+    $content = str_replace(',"Address 1"','',$content);
+    $content = str_replace(',"Address 2"','',$content);
+    $content = str_replace(',"Address 3"','',$content);
+    $content = str_replace(',"City"','',$content);
+    $content = str_replace(',"State"','',$content);
+    $content = str_replace(',"Postal Code"','',$content);
+    
+     
     //--------------------------------------------------------------------------------
     
     $separator = ",";
     $this->Member->recursive = 0;
     foreach($this->Member->find('all',array('conditions'=>$conditions,'fields'=>$untouched_fields)) as $index => $per_member_report)
     {
+
      foreach($per_member_report as $index => &$per_member)
      {
       foreach($per_member as &$value )
@@ -211,10 +221,10 @@ class MembersController extends AdminAppController
        $value = '"'.ucwords(strtolower(strip_tags($value))).'"';
       }           
      }
-          
+    
      $patterns[0] = "/,/";
      $patterns[1] = "/\n/";
-
+  
      $content .= ife(!empty($per_member_report['Member']['sponsor_member_id']),"=".$per_member_report['Member']['sponsor_member_id'],' ');
      $content .= ","; 
      $content .= ife(!empty($per_member_report['Member']['member_id']),"=".$per_member_report['Member']['member_id'],' ');
@@ -231,13 +241,35 @@ class MembersController extends AdminAppController
      $content .= ",";
      $content .= ife(!empty($per_member_report['Member']['race']),$per_member_report['Member']['race'],' ');
      $content .= ",";
-     $content .= ife(!empty($per_member_report['Member']['address']),preg_replace($patterns," ",$per_member_report['Member']['address']),' ');
-     $content .= ",";
+     
+     if(isset($per_member_report['Member']['address_1']))
+     {       
+      $address  = $per_member_report['Member']['address_1'];
+      $address .= " ";
+      $address .= $per_member_report['Member']['address_2'];
+      $address .= " ";
+      $address .= $per_member_report['Member']['address_3'];
+      $address .= " ";
+      $address .= $per_member_report['Member']['postal_code'];
+      $address .= " ";
+      $address .= $per_member_report['Member']['city'];
+      $address .= " ";
+      $address .= $per_member_report['Member']['state'];
+      
+      $content .= '"'.str_replace('"','',$address).'"';
+      $content .= ",";       
+     }
+     else
+     {
+      $content .= ife(!empty($per_member_report['Member']['address']),preg_replace($patterns," ",$per_member_report['Member']['address']),' ');
+      $content .= ",";
+     }
+     
      $content .= ife(!empty($per_member_report['Member']['contact_number_house']),$per_member_report['Member']['contact_number_house'],' ');
      $content .= ",";
      $content .= ife(!empty($per_member_report['Member']['contact_number_hp']),$per_member_report['Member']['contact_number_hp'],' ');
      $content .= ",";
-     $content .= ife(!empty($per_member_report['Member']['email']),$per_member_report['Member']['email'],' ');
+     $content .= ife(!empty($per_member_report['Member']['email']),strtolower($per_member_report['Member']['email']),' ');
      $content .= ",";
      $content .= ife(!empty($per_member_report['Member']['spouse_name']),$per_member_report['Member']['spouse_name'],' ');
      $content .= ",";
@@ -270,10 +302,13 @@ class MembersController extends AdminAppController
      $s = str_replace('"','',($per_member_report['Member']['created']));
      $content .= '"'.date("Y-m-d",strtotime($s)).'"';
      $content .= "\n";
+
     }
-     
+    
+    header('Content-Type: text/html; charset=utf-8');
     header("Content-Type: text/csv");
     header("Content-Disposition: attachment; filename=members_report.csv");
+    header('Content-Length: '.strlen($content));
     echo $content;
     exit;
  }
@@ -1130,7 +1165,6 @@ function admin_ewallet()
      $this->Member->deleteAll(array('Member.member_id' => $group_of_ids));
      $this->MemberCommission->deleteAll(array('MemberCommission.member_id' => $group_of_ids));
      $this->Sale->deleteAll(array('OR'=>array('Sale.member_id' => $index)));//different case...
-     $this->BroughtOver->deleteAll(array('OR'=>array('BroughtOver.sponsor_member_id' => $group_of_ids,'BroughtOver.member_id'=>$group_of_ids)));
      $this->BroughtOverManagement->deleteAll(array('BroughtOverManagement.sponsor_member_id' => $group_of_ids));
     }
     else

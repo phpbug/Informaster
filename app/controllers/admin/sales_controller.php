@@ -45,7 +45,10 @@ class SalesController extends AdminAppController
 	function admin_lists()          
 	{
   if(isset($this->params['form']['submit']))
-  {
+  { 
+	
+   pr($this->data);
+	
    $fieldList = array('member_id','insurance_paid');  
    $this->Sale->set($this->data);
      
@@ -99,7 +102,7 @@ class SalesController extends AdminAppController
 		$this->redirect('/admin/sales/lists');
 		exit;
 	}
- 
+  
  /* 
 	function admin_edit($id=null)
 	{
@@ -846,11 +849,10 @@ class SalesController extends AdminAppController
    //Set the long list results viewing for user
    if(isset($conditions[0]))//only when theres results display then only list everything else limit them
    {
-    $this->paginate['limit'] = 999999999999;
+    $this->paginate['limit'] = 999999;
    }
   }
-                                                
-  
+                                                 
   $this->paginate['order'] = array('default_period_start DESC');
   $sales = $this->paginate('ViewSaleReport',$conditions);
     
@@ -914,21 +916,21 @@ class SalesController extends AdminAppController
     
     foreach($view_sale_reports as $index => $per_member_report)
     {  
-     $content .= ife(!empty($per_member_report['ViewSaleReport']['child_name']),'"'.ucwords(strtolower($per_member_report['ViewSaleReport']['child_name']).'"'),'-');
+     $content .= ife(!empty($per_member_report['ViewSaleReport']['child_name']),'"'.ucwords(strtolower($per_member_report['ViewSaleReport']['child_name']).'"'),'');
      $content .= ","; 
-     $content .= ife(!empty($per_member_report['ViewSaleReport']['bank_name']),'"'.$per_member_report['ViewSaleReport']['bank_name'].'"','-');
+     $content .= ife(!empty($per_member_report['ViewSaleReport']['bank_name']),'"'.$per_member_report['ViewSaleReport']['bank_name'].'"','');
      $content .= ",";
-     $content .= ife((strlen($per_member_report['ViewSaleReport']['bank_account_num'])>0),'"'.$per_member_report['ViewSaleReport']['bank_account_num'].'"','-');
+     $content .= ife((strlen($per_member_report['ViewSaleReport']['bank_account_num'])>0),'"'.$per_member_report['ViewSaleReport']['bank_account_num'].'"','');
      $content .= ",";
-     $content .= ife($per_member_report['ViewSaleReport']['insurance_paid']>0,'"'.$per_member_report['ViewSaleReport']['insurance_paid'].'"','-');
+     $content .= ife($per_member_report['ViewSaleReport']['insurance_paid']>0,'"'.$per_member_report['ViewSaleReport']['insurance_paid'].'"','');
      $content .= ",";
-     $content .= ife(!empty($per_member_report['ViewSaleReport']['target_month']),'"'.$per_member_report['ViewSaleReport']['target_month'].'"','-');
+     $content .= ife(!empty($per_member_report['ViewSaleReport']['target_month']),'"'.$per_member_report['ViewSaleReport']['target_month'].'"','');
      $content .= ",";
-     $content .= ife(!empty($per_member_report['ViewSaleReport']['total_payment']),'"'.$per_member_report['ViewSaleReport']['total_payment'].'"','-');
+     $content .= ife(!empty($per_member_report['ViewSaleReport']['total_payment']),'"'.$per_member_report['ViewSaleReport']['total_payment'].'"','');
      $content .= ",";
-     $content .= ife(!empty($per_member_report['ViewSaleReport']['default_period_start']),'"'.$per_member_report['ViewSaleReport']['default_period_start'].'"','-');
+     $content .= ife(!empty($per_member_report['ViewSaleReport']['default_period_start']),'"'.$per_member_report['ViewSaleReport']['default_period_start'].'"','');
      $content .= ",";
-     $content .= ife(!empty($per_member_report['ViewSaleReport']['default_period_until']),'"'.$per_member_report['ViewSaleReport']['default_period_until'].'"','-');
+     $content .= ife(!empty($per_member_report['ViewSaleReport']['default_period_until']),'"'.$per_member_report['ViewSaleReport']['default_period_until'].'"','');
      $content .= "\n";
     }
       
@@ -1513,6 +1515,7 @@ class SalesController extends AdminAppController
    }
     
  }
+ 
  
  /**
   * @Objective : To continously display table row..

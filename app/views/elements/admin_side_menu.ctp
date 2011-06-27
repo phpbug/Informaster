@@ -1,3 +1,21 @@
+<script type="text/javascript">
+$(document).ready(function(){
+
+  $("#statement").each(function(index){
+  
+   $(this).children().children().next().css('cursor','pointer');
+   
+  $(this).children().hover(function(){
+     $(this).children().next().show();
+   },
+   function(){
+     $(this).children().next().hide();
+   });
+   
+});
+  
+});
+</script>
 <div id="side-menu">      
   <div id="top-box">
     <?php 
@@ -75,12 +93,12 @@
   <div id="bottom">&nbsp;</div>
   </div>   
   <?php
-  
+
   if(isset($monthly_sales[0]) && sizeof($monthly_sales) > 0):
        
      echo '<div id="archive-listing">';
-     //echo '<div style="margin:10px 0px;">'.$html->link('Member Paid History',array('controller'=>'sales','action'=>'sales_history/'.$per_parent)).'</div>';
-     echo '<ul style="font-size:15px;">';
+     echo '<div style="margin:10px 0px;">'.$html->link('Member Paid History',array('controller'=>'hierachies','action'=>'sales_history/'.$per_parent)).'</div>';
+     echo '<ul style="font-size:15px;" id="statement">';
     
       if(date("d") >= 22)
       {
@@ -99,8 +117,6 @@
         $anchor_text_1 = date("Ymd",strtotime($per_month['Sale']['default_period_start']));  
         $anchor_text_2 = date("Ymd",strtotime($per_month['Sale']['default_period_until']));
 
-        //echo 'Year :: '.date("Y").' VS '.date("Y",strtotime($per_month['Sale']['default_period_until']));
-             
         if($anchor_text_1 > $default_period_start_now && count($monthly_sales) > 1)
         {
          break;
@@ -108,12 +124,12 @@
         
         if(date("Y") <> date("Y",strtotime($per_month['Sale']['default_period_until'])))
         {
-         //continue;
+         continue;
         }
         
         echo '<li>';
-        //echo $html->link($per_month['Sale']['default_period_start']." - ".$per_month['Sale']['default_period_until'],array('controller'=>'hierachies','action'=>'downline/'.$per_parent.'/'.$anchor_text_1.'/'.$anchor_text_2));
         echo $html->link( 'Statement '.date("F Y",strtotime($per_month['Sale']['default_period_until'])) ,array('controller'=>'hierachies','action'=>'downline/'.$per_parent.'/'.$anchor_text_1.'/'.$anchor_text_2));
+        echo '<span style="margin-left:20px;display:none;">'.$html->link('Edit',array('controller'=>'hierachies','action'=>'edit_monthly_commission/'.$per_parent.'/'.$anchor_text_1.'/'.$anchor_text_2.'/1')).'</span>';
         echo '</li>';
           
       endforeach;

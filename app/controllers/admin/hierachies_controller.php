@@ -1,7 +1,7 @@
 <?php
 /**
  * using user id is the key of all linking 
- **/
+**/
 App::import('Sanitize');
 App::import('Controller','AdminApp');
 App::import('Vendor','tcpdf/tcpdf');
@@ -169,12 +169,13 @@ class HierachiesController extends AdminAppController
   //For the archives
   
   $monthly_sales = $this->Sale->find('all',array(
-   'conditions' => array('calculated'=>'Y'), 
+   'conditions' => array('DATE_FORMAT(default_period_until,"%Y")'=>date("Y"),'calculated'=>'Y'), 
    'fields' => array('DISTINCT Sale.default_period_start,Sale.default_period_until') , 
    'order' => 'Sale.default_period_start ASC'
    )
   );
   
+    
   $this->set('per_parent',$per_parent);
   $this->set('monthly_sales',$monthly_sales);
   
@@ -267,6 +268,88 @@ class HierachiesController extends AdminAppController
 
   return $member_commission;
                                               
+ }
+ 
+ //To let user edit whatever has been calculated by the system on montly basis
+ function admin_edit_monthly_commission($per_parent=null,$default_period_start=null,$default_period_until=null,$coming_from=null,$unique_id=null)
+ {
+  if(!isset($per_parent) | !isset($default_period_start) | !isset($default_period_until))
+  {
+    $this->Session->setFlash('System unable to deter member_id, please try again','default',array('class'=>'undone'));
+    $this->redirect('/admin/hierachies/');
+  }
+  
+  if(isset($this->params['form']['export']))
+  {
+   
+   $this->data['MemberCommission']['id'] = $unique_id;
+   
+   if($this->MemberCommission->save($this->data,false))
+   {
+     $this->Session->setFlash('Commission updated successfully','default',array('class'=>'done'));
+     switch($coming_from)
+     {
+      case 1:
+       $this->redirect('/admin/hierachies/downline/'.$per_parent.'/'.$default_period_start.'/'.$default_period_until.'/'); 
+      break;
+      
+      case 2:
+       $this->redirect('/admin/hierachies/sales_history/'.$per_parent.'/'.$default_period_start.'/'.$default_period_until.'/');
+      break;
+     }
+   }
+   else
+   {
+    $this->Session->setFlash('System unable to deter member_id, please try again','default',array('class'=>'undone'));
+    $this->redirect('/admin/edit_monthly_commission/'.$per_parent.'/'.$default_period_start.'/'.$default_period_until.'/');
+   }
+  }
+  
+  $conditions = array(
+   'member_id' => $per_parent,
+   'DATE_FORMAT(default_period_start,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+   'DATE_FORMAT(default_period_until,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until)),
+  );
+  
+  $member_commission_info = $this->MemberCommission->find('first',array('conditions'=>$conditions));
+  
+  //getting member information such as name only
+  $fields = array('name','email');
+  $conditions = array('member_id'=>$per_parent);
+  $member_info = $this->Member->find('first',array('conditions'=>$conditions,'fields'=>$fields));
+  
+  $monthly_sales = $this->Sale->find('all',array(
+   'conditions' => array('DATE_FORMAT(default_period_until,"%Y")'=>date("Y"),'calculated'=>'Y'), 
+   'fields' => array('DISTINCT Sale.default_period_start,Sale.default_period_until') , 
+   'order' => 'Sale.default_period_start ASC'
+   )
+  );
+  
+  $this->set('per_parent',$per_parent);
+  $this->set('member_info',$member_info);
+  $this->set('coming_from',$coming_from);
+  $this->set('monthly_sales',$monthly_sales);
+  $this->set('default_period_start',$default_period_start);
+  $this->set('default_period_until',$default_period_until);
+  $this->set('member_commission_info',$member_commission_info);
+  
+ }
+ 
+ 
+ function admin_sales_history($per_parent=null)
+ {
+  
+  if(empty($per_parent))
+  {
+   $this->Session->setFlash('system unable to retrieve parent id','default',array('class'=>'undone'));
+   $this->redirect('/admin/members');
+  }
+
+  $conditions = array('member_id'=>$per_parent);
+  $archive_info = $this->MemberCommission->find('all',array('conditions'=>$conditions,'order'=>'MemberCommission.default_period_start ASC'));
+ 
+  $this->set('per_parent',$per_parent);
+  $this->set('archive_info',$archive_info);
  }
  
  
@@ -693,7 +776,7 @@ class HierachiesController extends AdminAppController
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -731,7 +814,7 @@ class HierachiesController extends AdminAppController
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -769,7 +852,7 @@ class HierachiesController extends AdminAppController
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -807,7 +890,7 @@ class HierachiesController extends AdminAppController
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -845,7 +928,7 @@ class HierachiesController extends AdminAppController
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -883,7 +966,7 @@ class HierachiesController extends AdminAppController
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>

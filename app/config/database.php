@@ -82,9 +82,9 @@ class DATABASE_CONFIG {
 		'driver' => 'mysqli',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'root',
-		'password' => '',
-		'database' => 'infomaster',
+		'login' => 'arenciel_informa',
+		'password' => '7f11t34f!!',
+		'database' => 'arenciel_informaster',
 		'prefix' => '',
 	);
 

@@ -319,6 +319,9 @@ var $hunt_date_before;
   
   // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    
+  echo $payee.' paid '.$per_parent.' in level '.$hierarchy_level;
+  echo '<br />'; 
+   
   $paidContributor['PaidContributor']['level'] = $hierarchy_level; 
   $paidContributor['PaidContributor']['sponsor_member_id'] = $per_parent;
   $paidContributor['PaidContributor']['member_id'] = $payee;    

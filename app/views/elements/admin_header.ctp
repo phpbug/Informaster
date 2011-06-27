@@ -51,6 +51,28 @@
     <li><?php echo $html->link('Sales Management',array('controller'=>'sales','action'=>'lists')); ?></li>
    </ul>
 </div>
+<style type="text/css">
+.system_management
+{
+  top:10px;
+  float:left;
+  right:10px;
+  list-style:none;
+  border:1px solid black;
+  position:absolute;
+  z-index:10;
+}
+</style>
+<div id="system_management_links">
+<ul class="system_management">
+ <li>Link 1</li>
+ <li>Link 2</li>
+ <li>Link 3</li>
+ <li>Link 4</li>
+ <li>Link 5</li>
+</ul>
+</div>
+
 <div id="header">
   <img src="<?php echo $this->webroot; ?>img/28x28.png" border="0" />
   <span id="system_config"><?php echo $html->link('System Configuration',array('controller'=>'systems','action'=>'configure')); ?></span>
