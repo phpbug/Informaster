@@ -320,10 +320,9 @@ var $hunt_date_before;
   // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    
   echo $payee.' paid '.$per_parent.' in level '.$hierarchy_level;
-  echo '<br />'; 
-   
-  $paidContributor['PaidContributor']['level'] = $hierarchy_level; 
-  $paidContributor['PaidContributor']['sponsor_member_id'] = $per_parent;
+  echo '<br />';
+  
+  $paidContributor['PaidContributor'][$hierarchy_level] = $per_parent; 
   $paidContributor['PaidContributor']['member_id'] = $payee;    
   $paidContributor['PaidContributor']['default_period_start'] = $this->hunt_date_before; 
   $paidContributor['PaidContributor']['default_period_until'] = $this->hunt_date_after;  
@@ -331,7 +330,16 @@ var $hunt_date_before;
   $paidContributor['PaidContributor']['insurance_paid'] = $insurance_paid;
   
   $this->PaidContributor->create(); 
-  $this->PaidContributor->save($paidContributor,false);
+  if($this->PaidContributor->save($paidContributor,false))
+  {
+   echo 'Inserted Into Contributor';
+   echo '<br />';
+  }
+  else
+  {
+   echo 'Failed To Insert Into Contributor';
+   echo '<br />';
+  }
   
   // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   

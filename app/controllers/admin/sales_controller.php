@@ -46,9 +46,6 @@ class SalesController extends AdminAppController
 	{
   if(isset($this->params['form']['submit']))
   { 
-	
-   pr($this->data);
-	
    $fieldList = array('member_id','insurance_paid');  
    $this->Sale->set($this->data);
      
@@ -788,6 +785,53 @@ class SalesController extends AdminAppController
   endforeach; 
   echo "{query:'".$_GET['query']."',suggestions:".json_encode($groupOfUserNames)."}";
   exit();
+ }
+
+ function admin_edit($id=null)
+ {
+  
+  if(empty($id))
+  {
+   $this->Session->setFlash('System unable to retrieve sales unique id','default',array('class'=>'undone'));
+   $this->redirect('/admin/sales/report'); 
+  }
+  
+  if(isset($this->params['form']['submit']))
+  {
+    
+    if(empty($this->params['pass'][0]) | !isset($this->params['pass'][0]))
+    {
+     $this->Session->setFlash('System unable to retrieve sales unique id','default',array('class'=>'undone'));
+     $this->redirect('/admin/sales/report'); 
+    }
+    
+    $this->data['Sale']['id'] = $this->params['pass'][0];
+    
+    $this->Sale->create();
+    if($this->Sale->save($this->data['Sale'],false))
+    {
+     $this->Session->setFlash('System successfully updated the sales report','default',array('class'=>'done'));
+     $this->redirect('/admin/sales/report');
+    }
+    else
+    {
+     $this->Session->setFlash('System unable to retrieve sales unique id','default',array('class'=>'undone'));
+     $sale_info['Sale'] = $this->data['Sale'];
+    } 
+    
+    
+     
+    
+  }
+  
+   
+  $this->Sale->id = $id;
+  $sale_info=$this->Sale->read();
+
+
+
+  $this->set('id',$id);
+  $this->set('sale_info',$sale_info);
  }
 
  /**

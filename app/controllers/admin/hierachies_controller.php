@@ -58,8 +58,8 @@ class HierachiesController extends AdminAppController
   {
     if(isset($this->data['ViewHierarchyManagementReport']['sponsor_member_id']))
     {
-      $conditions[0] = array('ViewHierarchyManagementReport.sponsor_member_id LIKE '=> '%'.$this->data['ViewHierarchyManagementReport']['sponsor_member_id'].'%');
-      $this->paginate['limit'] = 999999999999;
+      $conditions[0] = array('ViewHierarchyManagementReport.sponsor_member_id LIKE '=> '%'.trim($this->data['ViewHierarchyManagementReport']['sponsor_member_id']).'%');
+      $this->paginate['limit'] = 99999;
     }
   }
   
@@ -77,7 +77,7 @@ class HierachiesController extends AdminAppController
  
  function admin_delete()
  {
- 
+  /*
   if(@count($this->params['form']['id']) < 1)
   { 
    $this->Session->setFlash('Unable to delete selected state , please try again','default',array('class'=>'undone'));
@@ -99,7 +99,8 @@ class HierachiesController extends AdminAppController
    $this->Session->setFlash('Unable to delete selected agent , please try again','default',array('class'=>'undone'));
   }
   $this->redirect('/admin/hierachies/'); 
-  exit; 
+  exit;
+  */ 
  }
  
  /**
@@ -497,8 +498,8 @@ class HierachiesController extends AdminAppController
    
    $order = array('target_month' => 'ASC');
    
-   $direct_profits = $this->ViewSaleReport->find('all',array('conditions'=>$conditions,'fields'=>$fields,'order'=>$order)); 
-    
+   $direct_profits = $this->ViewSaleReport->find('all',array('conditions'=>$conditions,'fields'=>$fields,'order'=>$order));
+   
    //Get parent's personal information
    //---------------------------------------------------------------------------------------------------
    $member_info = $this->Member->find('first',array( 'conditions' => array('Member.member_id' => $member_id)));
@@ -515,16 +516,18 @@ class HierachiesController extends AdminAppController
      )
    );
    
+   /*
    $group_member_info =$this->PaidContributor->find('all',
      array
      (
       'conditions' => array(
                  'sponsor_member_id' => $member_info['Member']['member_id'],
-                 'DATE_FORMAT(default_period_start,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
-                 'DATE_FORMAT(default_period_until,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                 'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
+                 'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                  )
      )
-   ); 
+   );
+   */ 
    
    if($member_commission_info['MemberCommission']['accumulated_profit'] < 1)
    {
@@ -533,9 +536,9 @@ class HierachiesController extends AdminAppController
      (
       'conditions' => array(
                  'member_id' => $member_info['Member']['member_id'],
-                 'DATE_FORMAT(default_period_until,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                 'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                  ),
-      'order' => 'default_period_until DESC'
+      'order' => 'target_month DESC'
      )
     );
     
@@ -763,9 +766,20 @@ class HierachiesController extends AdminAppController
       <td width="12.6%" align="right">'.$group_sales_bonus_1.'</td>
      </tr>';
      
+     $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'conditions' => array(
+                   'level_1' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                   )
+       )
+     );
+     
      foreach($group_member_info as $member_index => $group_member)
      {
-       if($group_member['PaidContributor']['level'] <> "level_1")
+       if(empty($group_member['PaidContributor']['level_1']))
        {
         continue;
        }
@@ -801,9 +815,21 @@ class HierachiesController extends AdminAppController
       <td width="12.6%" align="right">'.$group_sales_bonus_2.'</td>
      </tr>';
      
+     $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'conditions' => array(
+                   'level_2' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                   )
+       )
+     );
+     
+     
      foreach($group_member_info as $member_index => $group_member)
      {
-       if($group_member['PaidContributor']['level'] <> "level_2")
+       if(empty($group_member['PaidContributor']['level_2']))
        {
         continue;
        }
@@ -839,9 +865,20 @@ class HierachiesController extends AdminAppController
       <td width="12.6%" align="right">'.$group_sales_bonus_3.'</td>
      </tr>';
      
+    $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'conditions' => array(
+                   'level_3' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                   )
+       )
+     );
+     
      foreach($group_member_info as $member_index => $group_member)
      {
-       if($group_member['PaidContributor']['level'] <> "level_3")
+       if(empty($group_member['PaidContributor']['level_3']))
        {
         continue;
        }
@@ -877,9 +914,20 @@ class HierachiesController extends AdminAppController
       <td width="12.6%" align="right">'.$group_sales_bonus_4.'</td>
      </tr>';
      
+     $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'conditions' => array(
+                   'level_4' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                   )
+       )
+     );
+     
      foreach($group_member_info as $member_index => $group_member)
      {
-       if($group_member['PaidContributor']['level'] <> "level_4")
+       if(empty($group_member['PaidContributor']['level_4']))
        {
         continue;
        }
@@ -915,9 +963,20 @@ class HierachiesController extends AdminAppController
       <td width="12.6%" align="right">'.$group_sales_bonus_5.'</td>
      </tr>';
      
+    $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'conditions' => array(
+                   'level_5' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                   )
+       )
+     );
+     
      foreach($group_member_info as $member_index => $group_member)
      {
-       if($group_member['PaidContributor']['level'] <> "level_5")
+       if(empty($group_member['PaidContributor']['level_5']))
        {
         continue;
        }
@@ -953,9 +1012,20 @@ class HierachiesController extends AdminAppController
       <td width="12.6%" align="right">'.$group_sales_bonus_6.'</td>
      </tr>';
      
+    $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'conditions' => array(
+                   'level_6' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
+                   )
+       )
+     );
+     
      foreach($group_member_info as $member_index => $group_member)
      {
-       if($group_member['PaidContributor']['level'] <> "level_6")
+       if(empty($group_member['PaidContributor']['level_6']))
        {
         continue;
        }

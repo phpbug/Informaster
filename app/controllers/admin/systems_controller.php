@@ -18,6 +18,7 @@ class SystemsController extends AdminAppController
  var $huntTargetMonth;
  var $huntPeriodStart;
  var $huntPeriodUntil;
+ var $global_target_month = null;
  
  //Flaggy
  var $debug = true;
@@ -194,19 +195,20 @@ class SystemsController extends AdminAppController
                             AND 
                             UPPER(payment_clear) = "Y" 
                            ORDER BY 
-                            default_period_start ASC
+                            default_period_start ASC LIMIT 1
                            )
                            AND 
-                           DATE_FORMAT(target_month,"%Y%m%d") <= '.date("Ymd",strtotime($this->data['SalesSetting']['calculate_recent_until_date'])).'
+                           DATE_FORMAT(target_month,"%Y%m%d") <= '.date("Ymd",strtotime($this->data['SalesSetting']['calculate_recent_until_date'])).' 
+                           AND 
+                             view_sale_reports.member_id IS NOT NULL 
                            ORDER BY 
                             member_id,
                             target_month 
                            ASC';
   
-  
      
       $this->childrens = $this->ViewSaleReport->query($sale_conditions);
-         
+          
       if(!isset($this->childrens[0]))
       {
        $this->Session->setFlash('Commission calculated successfully','default',array('class'=>'done'));
@@ -221,20 +223,26 @@ class SystemsController extends AdminAppController
       
       // -------------------------------------------------------------------------------------------
       
+      
+      
       /*Ultimate count all sales recursively,one of the core feature/function*/
       $this->recursivelyCount();
-      
+    
       // -------------------------------------------------------------------------------------------
       echo 'Out From Recursive';
       echo '<br />';
-         
+    
+      
+      //============= LOGIC WRONG =============    
       //The function below is to deduct the credit applied to the table before this for the member bringing over to the next month.
       if(isset($this->brought_over_member_id[0]))
       {
+       echo 'Calculating Brought Over';
+       echo '<br />';
        $this->setBroughtOver();
       }
+      //============= LOGIC WRONG =============
       
-      exit;
             
       //Calculate the accumulated
       //Search for member that has zero accumulation profit
@@ -244,6 +252,8 @@ class SystemsController extends AdminAppController
       {
        $this->getAccumulated($sponsor_member_ids);//this is gonig to act like a recursive
       }
+      
+      exit;
                              
       $this->Session->setFlash('Commission calculated successfully','default',array('class'=>'done'));
       $this->redirect('/admin/systems/calculate_commission/');
@@ -340,11 +350,24 @@ class SystemsController extends AdminAppController
     $default_period_start = $child[0]['default_period_start']; 
     $default_period_until = $child[0]['default_period_until'];
     $member_target_month = date("Ymd",strtotime($child['view_sale_reports']['target_month'])); //when is it the member paid
-                      
+    $this->global_target_month = $member_target_month; 
+ 
+    echo ' Date :: '.$default_period_start.' >= '.$member_target_month.' OR '.$member_target_month.' <= '.$default_period_until;
+    echo '<br />';
+ 
+                         
     //Check see whether the member has been paid on time
     if($default_period_start >= $member_target_month  | $member_target_month <= $default_period_until)
-    {  
+    {
+      echo 'Pass to group sales ? YES';
+      echo '<br />';
+        
       $this->isPassedCommissionNoCount = true;
+    }
+    else
+    {
+     echo 'Pass to group sales ? NO';
+     echo '<br />';
     }
     
   	 if($member_id <> $this->huntMemberID | $this->huntTargetMonth <> $member_target_month)
@@ -354,13 +377,14 @@ class SystemsController extends AdminAppController
       $this->huntForDatePosition($start);
     }
     
-    echo 'Person That Pay :: '.$member_id;
+    echo 'Person That Pay :: '.$member_id.' he/she paid on :: '.$this->global_target_month;
     echo '<br />';
 
     $this->calculateCommission($member_id,$member_id,null,0,$default_period_start,$default_period_until,$member_target_month);
 
     return $this->recursivelyCount($start+=1);//repeat the process until it ran out of nodes
    }
+   
  }
   
  /**
@@ -465,9 +489,9 @@ class SystemsController extends AdminAppController
  * @Objective : Looking for parent's parent.
  * @params1   : Parent sponsor_id       
  **/
- function searchForSuitableParent($parent=null,$default_period_start,$default_period_until)
+ function searchForSuitableParent($parent=null,$default_period_start,$default_period_until,$parent_list=null)
  {                                                                              
-  $parent = trim($parent);
+  
   if(empty($parent))
   {
    $this->log('unable to locate per parent for suitable parent function :: '.__LINE__.' :: '.__FILE__);
@@ -481,10 +505,10 @@ class SystemsController extends AdminAppController
    'fields' => array( 'HierarchyManagement.sponsor_member_id' )
    )
   );
-
+  
   if(
   $this->isParentQualifyLevelingBonus($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until) && 
-  strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P')
+  strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P' && !@in_array($parent_info['HierarchyManagement']['sponsor_member_id'],$parent_list))
   {
    return $parent_info['HierarchyManagement']['sponsor_member_id'];
   }
@@ -492,7 +516,7 @@ class SystemsController extends AdminAppController
   {
    if($parent_info['HierarchyManagement']['sponsor_member_id'] <> "")
    {
-    return $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until);//**recursive**
+    return $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until,$parent_list);//**recursive**
    }
   }
   
@@ -555,6 +579,7 @@ class SystemsController extends AdminAppController
           if(strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> "P")
           {
            $parent[$level] = $parent_info['HierarchyManagement']['sponsor_member_id'];//Direct profit is a must will earn thinggy
+           $level+=1;
           }
          break;
          
@@ -567,10 +592,11 @@ class SystemsController extends AdminAppController
           
           if(strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P' && !$this->isParentQualifyLevelingBonus($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until))
           {  
-            $parent_sponsor_id = $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until);
+            $parent_sponsor_id = $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until,$parent);
             if(!empty($parent_sponsor_id))
             {
              $parent[$level] = $parent_sponsor_id;
+             $level+=1;
             } 
           }
           else
@@ -578,6 +604,7 @@ class SystemsController extends AdminAppController
            if(strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P')
            {
             $parent[$level] = $parent_info['HierarchyManagement']['sponsor_member_id'];
+            $level+=1;
            }
           }
    
@@ -586,7 +613,7 @@ class SystemsController extends AdminAppController
         
         if($parent_info['HierarchyManagement']['sponsor_member_id'] <> "" && strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P')
         {
-         return $this->calculateCommission($parent_info['HierarchyManagement']['sponsor_member_id'],$payee,$parent,$level+=1,$default_period_start,$default_period_until,$member_target_month);
+         return $this->calculateCommission($parent_info['HierarchyManagement']['sponsor_member_id'],$payee,$parent,$level,$default_period_start,$default_period_until,$member_target_month);
         }
         
       }
@@ -610,6 +637,12 @@ class SystemsController extends AdminAppController
    return false;
   }
   
+  echo 'Before';
+  echo '<br />';
+  pr($parent);
+  echo '<br />';
+  echo '<br />';
+  
   $parent = array_unique($parent);
   
   echo 'Groups';
@@ -620,7 +653,8 @@ class SystemsController extends AdminAppController
   echo '<br />';
   echo ' ------------------------------- ';
   echo '<br />';
- 
+  
+
   /***********************************************************************************************************************************************************
   * End of filtering
   ************************************************************************************************************************************************************/
@@ -680,14 +714,31 @@ class SystemsController extends AdminAppController
    $insurance_paid = null;
    $insurance_paid = $_sales_info['ViewSaleReport']['insurance_paid'];
    
+   //Payee2 exists is just to make the report looks more organize and do not want to interrupt with system logic.
+   //$member_target_month2 wanted to get the paid date of the simpanan that make the payment
+   $payee2 = null;
+   
+   if((int)$level < 1)
+   {
+    $payee2 = $payee;
+   }
+   else
+   {
+    $payee2 = $parent[0];
+   }
+   
+   echo 'In Report Payee Is :: '.$payee2.' with date inserted :: '.$this->global_target_month;
+   echo '<br />';
+       
    $clean_calculation[] = $this->updateParentCommissionEarned(
    
    $per_parent,
    $insurance_paid,
-   $member_target_month,
+   $this->global_target_month,
    $hierarchy_level,
-   $payee   
+   $payee2   
    );
+
    
   }
   
@@ -876,20 +927,20 @@ class SystemsController extends AdminAppController
    $conditions = array(
                        'Member.member_id' => $parent,
                        'Sale.payment_clear' => 'Y',
-                       'DATE_FORMAT(Sale.target_month,"%Y%m%d") >= ' => $default_period_start,
-                       'DATE_FORMAT(Sale.target_month,"%Y%m%d") <= ' => $default_period_until
+                       'DATE_FORMAT(Sale.default_period_start,"%Y%m%d") >= ' => $default_period_start,
+                       'DATE_FORMAT(Sale.default_period_until,"%Y%m%d") <= ' => $default_period_until
                       );                                                             
    $this_month_sales_or_maintain = $this->Sale->find('count',array('conditions'=>$conditions));
   
    //If no sales detected on top for the parent , the portion of the codes below will be executed
-   echo 'Q-aing : '.$parent;
-   echo '<br />';
-   echo 'Brought over : '.@(int)$this->getBroughtOver($parent);
-   echo '<br />';
-   echo 'Maintain : '.@(int)$this_month_sales_or_maintain;
-   echo '<br />';
-   echo 'Qualify';
-   echo '<br />';
+   //echo 'Q-aing : '.$parent;
+   //echo '<br />';
+   //echo 'Brought over : '.@(int)$this->getBroughtOver($parent);
+   //echo '<br />';
+   //echo 'Maintain : '.@(int)$this_month_sales_or_maintain;
+   //echo '<br />';
+   //echo 'Qualify';
+   //echo '<br />';
   
     
   
@@ -897,16 +948,16 @@ class SystemsController extends AdminAppController
    if( $this->getBroughtOver($parent,$default_period_start,$default_period_until) > 0 && $this_month_sales_or_maintain > 0 )
    {
      
-     echo 'Qualify';
-     echo '<br />';
-     echo '<br />';
+     //echo 'Qualify';
+     //echo '<br />';
+     //echo '<br />';
     
      return true;//He/She is eligible to get the commission as he/she has brought over 
    }
    
-   echo 'Dissqualify';
-   echo '<br />';
-   echo '<br />';  
+   //echo 'Dissqualify';
+   //echo '<br />';
+   //echo '<br />';  
    
    
    

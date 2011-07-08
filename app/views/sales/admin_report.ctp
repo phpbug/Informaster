@@ -60,14 +60,13 @@ $(document).ready(function(){
 <h2>Sales Report</h2>
 <?php echo $form->create('Sale',array('action'=>'report')); ?>
 
-
 <div>
 
  <dl style="float:left;"> 
-  <dt>Date From : </dt>
+  <dt>Paid In Date From : </dt>
   <dd>
   <?php echo $form->text('created_from',array('value'=>@$data['ViewSaleReport']['created_from'])); ?>
-  <div class="hintz">*Please enter the starting date of the report</div>
+  <div class="hintz">* Please enter the <b>paid in</b> date of the report</div>
   </dd>
  </dl>
 
@@ -86,10 +85,10 @@ $(document).ready(function(){
 
 <div>
 <dl style="float:left;"> 
- <dt>Date Till : </dt>
+ <dt>Paid In Date Till : </dt>
  <dd>
  <?php echo $form->text('created_till',array('value'=>@$data['ViewSaleReport']['created_till'])); ?>
- <div class="hintz">*Please enter the end date of the report</div>
+ <div class="hintz">* Please enter the <b>paid in</b> date of the report</div>
  </dd>
 </dl>
 
@@ -157,8 +156,8 @@ echo $form->create('Sale',array('id'=>'ResultsForm','action'=>'delete')); ?>
        $style = ''; 
       endif;
      
-      $sale['ViewSaleReport']['parent_name'] = ucwords($text->trim($sale['ViewSaleReport']['parent_name'],40));
-      $sale['ViewSaleReport']['child_name']  = $text->trim($sale['ViewSaleReport']['child_name'],40);
+      $sale['ViewSaleReport']['parent_name'] = ucwords($text->trim($sale['ViewSaleReport']['parent_name'],30));
+      $sale['ViewSaleReport']['child_name']  = $text->trim($sale['ViewSaleReport']['child_name'],30);
       
       if(empty($sale['ViewSaleReport']['parent_name']))
       {
@@ -168,18 +167,11 @@ echo $form->create('Sale',array('id'=>'ResultsForm','action'=>'delete')); ?>
       echo '<tr style="'.$style.'" height="30">
              <td align="center" style="width:5%;">'.(($key+1)+$start).'.</td>';
              
-             if(strtoupper($sale['ViewSaleReport']['calculated']) == "N" )
-             {
-              echo '<td style="width:22%;">'.ucwords(strtolower($sale['ViewSaleReport']['parent_name'])).'</td>';
-             }
-             else
-             {
-              echo '<td style="width:22%;">'.ife(!empty($sale['ViewSaleReport']['parent_name']),ucwords(strtolower($sale['ViewSaleReport']['parent_name'])),'-').'</td>';
-             }
-             
-       //$sale['ViewSaleReport']['target_month'] = date('jS F Y',strtotime($sale['ViewSaleReport']['target_month']));
+       $linked = $html->link(ucwords(strtolower($sale['ViewSaleReport']['child_name'])),array('controller'=>'sales','action'=>'edit/'.$sale['ViewSaleReport']['id']));
+
+       echo '<td style="width:22%;">'.ife(!empty($sale['ViewSaleReport']['parent_name']),ucwords(strtolower($sale['ViewSaleReport']['parent_name'])),'-').'</td>';
               
-       echo '<td style="width:22%;">'.ife(!empty($sale['ViewSaleReport']['child_name']),ucwords(strtolower($sale['ViewSaleReport']['child_name'])),'-').'</td>
+       echo '<td style="width:22%;">'.ife(!empty($sale['ViewSaleReport']['child_name']),$linked,'-').'</td>
              <td align="center" style="width:9%;">'.ife(!empty($sale['ViewSaleReport']['insurance_paid']),'RM '.ucfirst($sale['ViewSaleReport']['insurance_paid']),'-').'</td>
              <td align="center" style="width:9%;">'.ife(!empty($sale['ViewSaleReport']['total_payment']),'RM '.ucfirst($sale['ViewSaleReport']['total_payment']),'-').'</td>
              <td align="center" style="width:9%;">'.ife(!empty($sale['ViewSaleReport']['target_month']),$sale['ViewSaleReport']['target_month'],'-').'</td>

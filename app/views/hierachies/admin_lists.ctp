@@ -41,24 +41,25 @@ $(document).ready(function(){
 <div style="clear:left;height:10px;">&nbsp;</div>
 <div style="float:left;">About <b><?php echo ife(!empty($countParent),$countParent,0); ?></b> results found</div>
 <div class="control">
- <a href="#" id="all">All</a>
+ <!-- <a href="#" id="all">All</a> 
  &nbsp;&nbsp;
  <a href="#" id="none">None</a>
- &nbsp;&nbsp;
- <a href="#" id="delete">Delete</a>
- &nbsp;&nbsp;
+ &nbsp;&nbsp; -->
+ <!-- <a href="#" id="delete">Delete</a> -->
+ <!-- &nbsp;&nbsp; -->
  <?php echo $html->link('Add New Hierachy',array('controller'=>'members','action'=>'registration')); ?> 
 </div>
-<?php echo $form->create('hierachy',array('id'=>'ResultsForm','action'=>'delete')); ?>
+<?php echo $form->create('hierachy',array('id'=>'ResultsForm')); ?>
 <table width="100%" cellpadding="3" cellspacing="0" border="0">
   <tr id="header-top" style="color:white;font-weight:bold;">
     <td align="center">No.</td>
     <td align="center">Sponsor Name</td>
     <td align="center">Sponsor ID</td> 
     <td align="center">Total Downline</td>
-    <?php if($userinfo['profile_id'] == 1) { ?>
-    <td align="center">Settings</td>
-    <?php } ?>
+    
+    <?php //if($userinfo['profile_id'] == 1) { ?>
+    <!-- <td align="center">Settings</td> -->
+    <?php //} ?>
   </tr>
  <?php  
  
@@ -87,7 +88,7 @@ $(document).ready(function(){
     }
     else
     {
-     $per_parent['ViewHierarchyManagementReport']['sponsor_name'] = $text->trim($per_parent['ViewHierarchyManagementReport']['sponsor_name'],30);
+     $per_parent['ViewHierarchyManagementReport']['sponsor_name'] = $text->trim($per_parent['ViewHierarchyManagementReport']['sponsor_name'],50);
      $per_parent['ViewHierarchyManagementReport']['sponsor_name'] = ucwords(strtolower($per_parent['ViewHierarchyManagementReport']['sponsor_name']));
      echo '<td>'.ife(!empty($per_parent['ViewHierarchyManagementReport']['sponsor_name']),$html->link(ucwords($per_parent['ViewHierarchyManagementReport']['sponsor_name']),array('controller'=>'hierachies','action'=>'downline/'.$per_parent['ViewHierarchyManagementReport']['sponsor_member_id'])),'-').'</td>';
     }
@@ -103,10 +104,10 @@ $(document).ready(function(){
      echo '<td align="center">'.ife(!empty($per_parent['ViewHierarchyManagementReport']['downline']),$html->link($per_parent['ViewHierarchyManagementReport']['downline'],array('controller'=>'hierachies','action'=>'downline/'.$per_parent['ViewHierarchyManagementReport']['sponsor_member_id'])),'-').'</td>';
     }
     
-    if($userinfo['profile_id'] == 1)
-    {
-     echo '<td align="center"><input type="checkbox" name="id[]" value="'.$per_parent['ViewHierarchyManagementReport']['id'].'"></td></tr>';
-    }
+    //if($userinfo['profile_id'] == 1)
+    //{
+     //echo '<td align="center"><input type="checkbox" name="id[]" value="'.$per_parent['ViewHierarchyManagementReport']['id'].'"></td></tr>';
+    //}
            
    $arrangment+=1;
              

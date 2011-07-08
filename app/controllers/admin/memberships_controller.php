@@ -24,6 +24,7 @@ class MyPdf extends TCPDF {
 class MembershipsController extends AppController
 {
  var $name    = "Memberships";
+ var $uses    = array('User');
 
  function beforeFilter()
  {
@@ -872,7 +873,7 @@ function setBroughtOver(&$member_info)
    //---------------------------------------------------------------------------------------------------
   
    //count total direct profit & also get the direct profit's member_id,name,paid,target_month,etcc
-   $fields = array('DISTINCT total_payment',
+   $fields = array('total_payment',
                    'insurance_paid',
                    'target_month',
                    'member_id',

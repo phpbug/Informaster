@@ -200,3 +200,20 @@
 [23-Jun-2011 22:13:55] PHP Parse error:  syntax error, unexpected T_STRING in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 290
 [23-Jun-2011 23:06:05] PHP Parse error:  syntax error, unexpected T_DOUBLE_ARROW in /home/arenciel/public_html/app/views/hierachies/admin_edit_monthly_commission.ctp on line 22
 [23-Jun-2011 23:06:07] PHP Parse error:  syntax error, unexpected T_DOUBLE_ARROW in /home/arenciel/public_html/app/views/hierachies/admin_edit_monthly_commission.ctp on line 22
+[28-Jun-2011 21:51:00] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1160
+[28-Jun-2011 21:58:16] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home/arenciel/public_html/app/views/sales/admin_edit.ctp on line 35
+[28-Jun-2011 21:58:17] PHP Parse error:  syntax error, unexpected ')', expecting ',' or ';' in /home/arenciel/public_html/app/views/sales/admin_edit.ctp on line 35
+[29-Jun-2011 00:40:07] PHP Fatal error:  Call to undefined method MembershipsController::constructClasses() in /home/arenciel/public_html/cake/dispatcher.php on line 207
+[29-Jun-2011 00:40:08] PHP Fatal error:  Call to undefined method MembershipsController::constructClasses() in /home/arenciel/public_html/cake/dispatcher.php on line 207
+[29-Jun-2011 00:40:09] PHP Fatal error:  Call to undefined method MembershipsController::constructClasses() in /home/arenciel/public_html/cake/dispatcher.php on line 207
+[29-Jun-2011 00:40:09] PHP Fatal error:  Call to undefined method MembershipsController::constructClasses() in /home/arenciel/public_html/cake/dispatcher.php on line 207
+[29-Jun-2011 22:07:39] PHP Parse error:  syntax error, unexpected T_CONSTANT_ENCAPSED_STRING, expecting ',' or ';' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 347
+[01-Jul-2011 14:50:57] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 720
+[01-Jul-2011 14:50:57] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 720
+[01-Jul-2011 14:50:58] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1536
+[01-Jul-2011 14:50:58] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1537
+[04-Jul-2011 15:29:24] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1120
+[04-Jul-2011 15:29:24] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1120
+[04-Jul-2011 15:34:42] PHP Parse error:  syntax error, unexpected T_VARIABLE in /home/arenciel/public_html/app/admin_app_controller.php on line 326
+[04-Jul-2011 15:34:44] PHP Parse error:  syntax error, unexpected T_VARIABLE in /home/arenciel/public_html/app/admin_app_controller.php on line 326
+[04-Jul-2011 16:06:45] PHP Parse error:  syntax error, unexpected T_VARIABLE in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 722

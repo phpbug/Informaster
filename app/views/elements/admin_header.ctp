@@ -1,3 +1,4 @@
+
 <div style="float:right;padding-right:10px;padding-top:10px;padding-bottom:10px;">
   <?php
   if(isset($userinfo['profile_id']))
@@ -41,6 +42,45 @@
   ?>
 </div>
 <div style="clear:both;"></div>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+  $("#menu").each(function(index){
+  
+  
+   
+  $(this).children().hover(function(){
+     //$(this).children().next().show();
+     var dom_id = $(this).attr("id");
+     $('"'+dom_id+'_links"').show();
+   },
+   function(){
+     //$(this).children().next().hide();
+     console.log("hide");
+   });
+   
+});
+  
+});
+</script>
+
+<style type="text/css">
+.children
+{
+  padding:0px;
+  margin:0px;
+  float:left;
+}
+
+.children li
+{
+  float:left;
+  list-style:none;
+}
+</style>
+
 <div id="header-top">
    <!-- Links are here -->
    <ul id="menu">
@@ -48,30 +88,23 @@
     <li><?php echo $html->link('Pioneer Management',array('controller'=>'pioneers','action'=>'lists')); ?></li>
     <li><?php echo $html->link('Members Management',array('controller'=>'members','action'=>'lists')); ?></li>
     <li><?php echo $html->link('Hierachy Management',array('controller'=>'hierachies','action'=>'lists')); ?></li>
-    <li><?php echo $html->link('Sales Management',array('controller'=>'sales','action'=>'lists')); ?></li>
+    <li id="system_management">
+     <?php
+      echo $html->link('Sales Management',array('controller'=>'sales','action'=>'lists'));
+     ?>
+     <ul class="children">
+      <li>Link 1</li>
+      <li>Link 2</li>
+      <li>Link 3</li>
+      <li>Link 4</li>
+      <li>Link 5</li>
+     </ul> 
+    </li>
    </ul>
 </div>
-<style type="text/css">
-.system_management
-{
-  top:10px;
-  float:left;
-  right:10px;
-  list-style:none;
-  border:1px solid black;
-  position:absolute;
-  z-index:10;
-}
-</style>
-<div id="system_management_links">
-<ul class="system_management">
- <li>Link 1</li>
- <li>Link 2</li>
- <li>Link 3</li>
- <li>Link 4</li>
- <li>Link 5</li>
-</ul>
-</div>
+
+
+
 
 <div id="header">
   <img src="<?php echo $this->webroot; ?>img/28x28.png" border="0" />

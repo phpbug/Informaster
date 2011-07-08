@@ -17,11 +17,11 @@ class MembersController extends AdminAppController
    $conditions = array(); 
    if(!empty($this->data['Member']['name'])):
      $name = Sanitize::clean($this->data['Member']['name']);
-     $conditions[] = array('LOWER(name) LIKE ' => '%'.strtolower($name).'%');
+     $conditions[] = array('LOWER(name) LIKE ' => '%'.strtolower(trim($name)).'%');
    endif;
    if(!empty($this->data['Member']['member_num'])):
      $member_num = Sanitize::clean($this->data['Member']['member_num']);
-     $conditions[] = array('name' => '"'.($member_num).'"');
+     $conditions[] = array('name' => '"'.(trim($member_num)).'"');
    endif;
   endif;
 
@@ -39,30 +39,30 @@ class MembersController extends AdminAppController
   if(!empty($this->data)):
   
    if(!empty($this->data['Member']['new_ic_num'])):
-     $conditions[] = array('Member.new_ic_num' => $this->data['Member']['new_ic_num']);
+     $conditions[] = array('Member.new_ic_num' => trim($this->data['Member']['new_ic_num']));
    endif; 
    
    if(!empty($this->data['Member']['name'])):
      $name = Sanitize::clean($this->data['Member']['name']);
-     $conditions[] = array('LOWER(Member.name) LIKE ' => '%'.strtolower($name).'%');
+     $conditions[] = array('LOWER(Member.name) LIKE ' => '%'.strtolower(trim($name)).'%');
    endif;
    
    if(!empty($this->data['Member']['member_id'])):
      $member_id = Sanitize::clean($this->data['Member']['member_id']);
-     $conditions[] = array('member_id LIKE ' => '%'.($member_id).'%' );
+     $conditions[] = array('member_id LIKE ' => '%'.trim($member_id).'%' );
    endif;
    
    if(!empty($this->data['Member']['sponsor_member_id'])):
      $sponsor_member_id = Sanitize::clean($this->data['Member']['sponsor_member_id']);
-     $conditions[] = array('sponsor_member_id LIKE ' => '%'.($sponsor_member_id).'%' );
+     $conditions[] = array('sponsor_member_id LIKE ' => '%'.trim($sponsor_member_id).'%' );
    endif;
    
    if(!empty($this->data['Member']['joined_from'])):
-    $sorting[0] = $this->data['Member']['joined_from']; 
+    $sorting[0] = trim($this->data['Member']['joined_from']); 
    endif;
    
    if(!empty($this->data['Member']['joined_to'])):
-    $sorting[1] = $this->data['Member']['joined_to']; 
+    $sorting[1] = trim($this->data['Member']['joined_to']); 
    endif;
    
    
