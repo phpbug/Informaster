@@ -187,38 +187,54 @@ var $hunt_date_before;
   *@Objective : To make sure the direct profit is earn/gain and within the range of 2 years time. 
   *@$parent : The payee is also a child in Hierachy table
   **/
- function eligibleForDirectProfit($parent,$payee)
+ function eligibleFromProfiting($payee=null)
  {    
   if(empty($payee))
   {
    $this->log('system couldn\'t retrieve information on payee  :: '.__LINE__.'  :: '.__FILE__);
    return false;
-  }
+  } 
    
-  //Child is the member_id
-  $this->Member->recursive = -1;
-  $fields = array('Member.created');
-  $conditions = array('Member.member_id' => $payee,
-                      'Member.sponsor_member_id' => $parent);
-                      
-  $member_info = $this->Member->find('first',
-  array(
-   'conditions' => $conditions , 
-   'fields'=>$fields
-   )
+    //Getting the payee joined date.
+  $fields = array('DATE_FORMAT(Member.created,"%Y-%m-%d") as date_joined','Member.id');
+  $conditions = array('Member.member_id'=>$payee);
+  $member_info = $this->Member->find('first',array('conditions'=>$conditions,'fields'=>$fields));
+ 
+  $date_joined = explode('-',$member_info[0]['date_joined']);
+  
+  //Determine the period
+  if($date_joined[2] >= 22)
+  {
+   $default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1],22,$date_joined[0]));
+   $default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]+1),21,$date_joined[0]));
+  }                               
+  else
+  {
+   $default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1]-1,22,$date_joined[0]));
+   $default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]),21,$date_joined[0]));
+  }
+    
+  $default_start_date = explode("-",$default_start_date);
+  $default_until_date = explode("-",$default_until_date);
+  
+  $default_start_date = date("Ymd",mktime(0,0,0,$default_start_date[1]+23,22,$default_start_date[0]));
+  $default_until_date = date("Ymd",mktime(0,0,0,($default_until_date[1])+23,21,$default_until_date[0]));
+  
+  //Getting the sales period
+  $conditions = array(
+  'Sale.member_id'=>$member_info['Member']['id'],
+  'DATE_FORMAT(Sale.default_period_start,"%Y%m%d") >= ' => $default_until_date
   );
   
-  //Criteria for , once the direct payment mature within 2 years , then the upline no longer owned the direct profit.
-  $_2_years_after_dirty = explode('-',date('Y-m-d',strtotime($member_info['Member']['created'])));
-  $_2_years_after = date('Ymd',mktime(0,0,0,$_2_years_after_dirty[1],$_2_years_after_dirty[2],($_2_years_after_dirty[0]+2)));
-    
-  if($_2_years_after >= date('Ymd'))
-  {                     
-   return true;//eligible to get the pay.. 
+  $sale_info = $this->Sale->find('count',array('conditions'=>$conditions));
+  
+  if($sale_info >= 1)//not eligible for giving profit to direct and group sales.
+  {
+   return false;
   }
   else
   {
-   return false; //already 2 years time , contract ends....
+   return true; 
   }
     
  }

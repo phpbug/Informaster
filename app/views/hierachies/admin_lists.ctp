@@ -18,23 +18,51 @@ $(document).ready(function(){
    onSelect: function(value,data){},
    autoFill: false
  });
+ 
+ $("#ViewHierarchyManagementReportSponsorName").autocomplete({
+    serviceUrl: '<?php echo $this->webroot;?>admin/hierachies/getsponsorname',
+    minChars: 2,
+    maxHeight: 400,                 
+    width: 300,
+    zIndex: 9999,
+    onSelect: function(value,data){
+     
+    },
+    autoFill: false
+  });
    
 });
 </script>
 <h2>Parent Lists</h2>
-<dl>
+<dl style="float:left;margin:0px;padding:0px;">
  <dt>Search By Sponsor ID : <dt>
  <dd>
  <?php echo $form->text('ViewHierarchyManagementReport.sponsor_member_id',array('div' => false,'label' => false , 'value' => @$data['ViewHierarchyManagementReport']['sponsor_member_id'])); ?>
  <br /><span class="hintz">*Search by member number is an autocomplete field</span>
  </dd>
  <dt>&nbsp;</dt>
+</dl>
+
+<dl style="float:right;margin:0px;padding:0px;">
+ <dt>Search By Sponsor Name : <dt>
+ <dd>
+ <?php echo $form->text('ViewHierarchyManagementReport.sponsor_name',array('div' => false,'label' => false , 'value' => @$data['ViewHierarchyManagementReport']['sponsor_name'])); ?>
+ <br /><span class="hintz">*Search by member name is an autocomplete field</span>
+ </dd>
+ <dt>&nbsp;</dt>
+</dl>
+
+<dl style="clear:both;"></dl>
+
+<dl style="margin:0px;padding:0px;text-align:center;">
  <dd>
  <?php
   echo $form->submit('Submit',array('name'=>'search','class'=>'submit'));
  ?>
  </dd>
-</dl>  
+</dl>
+
+  
 <?php echo $form->end(); ?>
 <div style="clear:left;height:20px;">&nbsp;</div>
 <h2>Parent Listing</h2>

@@ -246,7 +246,14 @@ class SystemsController extends AdminAppController
             
       //Calculate the accumulated
       //Search for member that has zero accumulation profit
-      $query = 'SELECT member_id FROM member_commissions WHERE member_commissions.accumulated_profit < 1 GROUP BY member_id';
+      $query = 'SELECT 
+                  member_id 
+                FROM 
+                  member_commissions 
+                WHERE 
+                  member_commissions.accumulated_profit < 1 
+                GROUP BY 
+                  member_id';
       $sponsor_member_ids = $this->MemberCommission->query($query);
       if(count($sponsor_member_ids) > 0)
       {
@@ -342,7 +349,6 @@ class SystemsController extends AdminAppController
    {
     
     $member_target_month             = null ;//this will be later set into the database for records purpose.
-    $this->isPassedCommissionNoCount = false;//flag to determine whether commission will be calculated for the leveling bonus.
     
     $child = $this->childrens[$start];
     $member_id = $child['view_sale_reports']['member_id'];
@@ -355,13 +361,12 @@ class SystemsController extends AdminAppController
     echo ' Date :: '.$default_period_start.' >= '.$member_target_month.' OR '.$member_target_month.' <= '.$default_period_until;
     echo '<br />';
  
-                         
+    /*                         
     //Check see whether the member has been paid on time
     if($default_period_start >= $member_target_month  | $member_target_month <= $default_period_until)
     {
       echo 'Pass to group sales ? YES';
-      echo '<br />';
-        
+      echo '<br />';    
       $this->isPassedCommissionNoCount = true;
     }
     else
@@ -369,6 +374,7 @@ class SystemsController extends AdminAppController
      echo 'Pass to group sales ? NO';
      echo '<br />';
     }
+    */
     
   	 if($member_id <> $this->huntMemberID | $this->huntTargetMonth <> $member_target_month)
     {
@@ -379,8 +385,18 @@ class SystemsController extends AdminAppController
     
     echo 'Person That Pay :: '.$member_id.' he/she paid on :: '.$this->global_target_month;
     echo '<br />';
-
-    $this->calculateCommission($member_id,$member_id,null,0,$default_period_start,$default_period_until,$member_target_month);
+    
+    //if the payee is still have within the 24 period of payment then the downline belongs to he/she
+    //are eligible to get the commission
+    if($this->eligibleFromProfiting($member_id)) 
+    {
+     $this->calculateCommission($member_id,$member_id,null,0,$default_period_start,$default_period_until,$member_target_month);
+    }
+    else
+    {
+     //else only update the sales table that he/she has been paid but take not effective on group sales.
+     $this->updatePayeeSalesReport($member_id,$default_period_start,$default_period_until,$member_target_month);
+    }
 
     return $this->recursivelyCount($start+=1);//repeat the process until it ran out of nodes
    }
@@ -487,7 +503,10 @@ class SystemsController extends AdminAppController
  
  /**
  * @Objective : Looking for parent's parent.
- * @params1   : Parent sponsor_id       
+ * @parent   : Parent sponsor_id
+ * @$default_period_start : Current date period that start counting
+ * @$default_period_until : Current date period that stop counting 
+ * @$parent_list : A list of existing parent on the tree          
  **/
  function searchForSuitableParent($parent=null,$default_period_start,$default_period_until,$parent_list=null)
  {                                                                              
@@ -505,10 +524,26 @@ class SystemsController extends AdminAppController
    'fields' => array( 'HierarchyManagement.sponsor_member_id' )
    )
   );
+                       
+  $isSheHeParent=false;
+  $isAlreadyInParentList=false;
+  $qualifyForLevelingBonus=false;
   
-  if(
-  $this->isParentQualifyLevelingBonus($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until) && 
-  strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P' && !@in_array($parent_info['HierarchyManagement']['sponsor_member_id'],$parent_list))
+  $qualifyForLevelingBonus = $this->isParentQualifyLevelingBonus($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until);
+  if(strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) == 'P'){$isSheHeParent = true;}
+  $isAlreadyInParentList = in_array($parent_info['HierarchyManagement']['sponsor_member_id'],$parent_list);
+    
+  
+  echo 'Is qualified for leveling bonus ? '.$qualifyForLevelingBonus;
+  echo '<br />';
+  echo 'Is already in parent list ? '.(int)$isAlreadyInParentList;
+  echo '<br />';
+  echo 'Is parent ? '.(int)$isSheHeParent;
+  echo '<br />';
+  echo '<br />';   
+    
+    
+  if($qualifyForLevelingBonus && !$isSheHeParent && !$isAlreadyInParentList)
   {
    return $parent_info['HierarchyManagement']['sponsor_member_id'];
   }
@@ -516,7 +551,7 @@ class SystemsController extends AdminAppController
   {
    if($parent_info['HierarchyManagement']['sponsor_member_id'] <> "")
    {
-    return $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until,$parent_list);//**recursive**
+    return $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until,&$parent_list);//**recursive**
    }
   }
   
@@ -547,39 +582,57 @@ class SystemsController extends AdminAppController
    'fields' => array('HierarchyManagement.sponsor_member_id')
    )
   );
+  
     
   /***********************************************************************************************************************************************************
   * Conditions #1 : If the payee had a late payment, her/his direct profit is earning for sure and will not gain any commission from leveling bonus.
   ************************************************************************************************************************************************************/
-  
+  /*
   if($this->isPassedCommissionNoCount == false && 
      $level < 1 && 
      $parent_info['HierarchyManagement']['sponsor_member_id'] > 0 && 
-     strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P')
-  {
-    if($this->eligibleForDirectProfit($parent_info['HierarchyManagement']['sponsor_member_id'],$payee))
+     strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P'){
+     
+    if($this->eligibleFromProfiting($parent_info['HierarchyManagement']['sponsor_member_id'],$payee))
     {
       $parent[$level] = $parent_info['HierarchyManagement']['sponsor_member_id'];
-    } 
+    }
+     
     return $this->calculateCommission($parent_info['HierarchyManagement']['sponsor_member_id'],$payee,$parent,7,$default_period_start,$default_period_until,$member_target_month);
   }
-  
+  */
   /***********************************************************************************************************************************************************
   * Conditions #2 : Leveling bonus 
   ************************************************************************************************************************************************************/
  
-  if(!is_null($parent_info['HierarchyManagement']['sponsor_member_id']) && 
-      $this->isPassedCommissionNoCount == true && 
+  echo '================================================================';
+  echo '<br />'; 
+  echo 'Starting Bonus Counting Verfication :: ';
+  echo '<br />';
+  echo 'First Check On :: '.$parent_info['HierarchyManagement']['sponsor_member_id'].' :: Level '.$level;
+  echo '<br />';
+   
+ 
+  if(!is_null($parent_info['HierarchyManagement']['sponsor_member_id']) &&  
       !empty($parent_info['HierarchyManagement']['sponsor_member_id'])  && 
       $level <= 6)
       {
         switch($level)
         {
          case 0:
+         echo '++ Reached switch function check at Level :: '.$level; 
+         echo '<br />';
           if(strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> "P")
           {
            $parent[$level] = $parent_info['HierarchyManagement']['sponsor_member_id'];//Direct profit is a must will earn thinggy
+           echo 'Found suitable parent :: '.$parent[$level];
+           echo '<br />';
            $level+=1;
+          }
+          else
+          {
+           echo 'Parent is a Pioneer Skipped';
+           echo '<br />';
           }
          break;
          
@@ -590,34 +643,84 @@ class SystemsController extends AdminAppController
          case 5:
          case 6:
           
-          if(strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P' && !$this->isParentQualifyLevelingBonus($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until))
+          echo '-- Reached switch function check at Level :: '.$level; 
+          echo '<br />';
+          
+          echo ' -------------------------- ';
+          echo '+<br />';
+          pr($parent);
+          echo '+<br />';
+          echo 'in array :: '.(int)in_array($parent_info['HierarchyManagement']['sponsor_member_id'],$parent);
+          echo '<br />';
+          echo ' -------------------------- ';
+          echo '<br />';
+          
+          if(
+          strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P' 
+          && 
+          !$this->isParentQualifyLevelingBonus($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until)
+          )
           {  
-            $parent_sponsor_id = $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until,$parent);
-            if(!empty($parent_sponsor_id))
+            echo $parent_info['HierarchyManagement']['sponsor_member_id'].' is not a qualified parent looking for new ones.';
+            echo '<br />';
+            
+            $parent_info['HierarchyManagement']['sponsor_member_id'] = $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until,$parent);
+            if(!empty($parent_info['HierarchyManagement']['sponsor_member_id']))
             {
-             $parent[$level] = $parent_sponsor_id;
+             $parent[$level] = $parent_info['HierarchyManagement']['sponsor_member_id'];
              $level+=1;
+             echo '++Qualified parent found :: '.$parent_info['HierarchyManagement']['sponsor_member_id'];
+             echo '<br />';
+            }
+            else
+            {
+             echo 'No suitable parent found';
+             echo '<br />';
             } 
           }
           else
           {
+           
            if(strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P')
            {
-            $parent[$level] = $parent_info['HierarchyManagement']['sponsor_member_id'];
-            $level+=1;
+             echo '--Qualified parent found :: '.$parent_info['HierarchyManagement']['sponsor_member_id'];
+             echo '<br />';
+             if(in_array($parent_info['HierarchyManagement']['sponsor_member_id'],$parent))
+             {
+              $parent_info['HierarchyManagement']['sponsor_member_id'] = $this->searchForSuitableParent($parent_info['HierarchyManagement']['sponsor_member_id'],$default_period_start,$default_period_until,$parent);  
+             }
+             
+             if($parent_info['HierarchyManagement']['sponsor_member_id'] <> "")
+             {
+              $parent[$level] = $parent_info['HierarchyManagement']['sponsor_member_id'];
+              $level+=1;
+             }  
            }
+           
           }
    
          break;
         }
         
-        if($parent_info['HierarchyManagement']['sponsor_member_id'] <> "" && strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P')
+        echo '<br />';
+        echo '================================================================';
+        echo '<br />';
+        
+        if(
+        $parent_info['HierarchyManagement']['sponsor_member_id'] <> "" 
+        &&
+        strtoupper($parent_info['HierarchyManagement']['sponsor_member_id']{0}) <> 'P'
+        &&
+        $level <= 6)
         {
+         echo '********** Recursive Return **********';
+         echo '<br />';
          return $this->calculateCommission($parent_info['HierarchyManagement']['sponsor_member_id'],$payee,$parent,$level,$default_period_start,$default_period_until,$member_target_month);
         }
         
       }
-          
+ 
+   
   /***********************************************************************************************************************************************************
   * End of the recursive function
   ************************************************************************************************************************************************************/
@@ -643,7 +746,7 @@ class SystemsController extends AdminAppController
   echo '<br />';
   echo '<br />';
   
-  $parent = array_unique($parent);
+  $parent = array_unique($parent);//just to safe guard and make sure everything it's ok
   
   echo 'Groups';
   echo '<br />';
@@ -694,15 +797,6 @@ class SystemsController extends AdminAppController
   { 
    
    if(empty($per_parent)){continue;}
-   
-   if($level < 1)//for direct profit only
-   {
-     //To make sure the direct profit is earn/gain and within the range of 2 years time. 
-     if(!$this->eligibleForDirectProfit($per_parent,$payee)) 
-     {
-      continue;
-     }
-   }
    
    // ------------------------------------------------------------------
    
@@ -933,33 +1027,23 @@ class SystemsController extends AdminAppController
    $this_month_sales_or_maintain = $this->Sale->find('count',array('conditions'=>$conditions));
   
    //If no sales detected on top for the parent , the portion of the codes below will be executed
-   //echo 'Q-aing : '.$parent;
-   //echo '<br />';
-   //echo 'Brought over : '.@(int)$this->getBroughtOver($parent);
-   //echo '<br />';
-   //echo 'Maintain : '.@(int)$this_month_sales_or_maintain;
-   //echo '<br />';
-   //echo 'Qualify';
-   //echo '<br />';
-  
-    
-  
-    
+   
+   echo 'Brought over : '.@(int)$this->getBroughtOver($parent);
+   echo '<br />';
+   echo 'Maintain : '.@(int)$this_month_sales_or_maintain;
+   echo '<br />';
+   
    if( $this->getBroughtOver($parent,$default_period_start,$default_period_until) > 0 && $this_month_sales_or_maintain > 0 )
    {
      
-     //echo 'Qualify';
-     //echo '<br />';
-     //echo '<br />';
+     echo 'Qualify';
+     echo '<br />';
     
      return true;//He/She is eligible to get the commission as he/she has brought over 
    }
    
-   //echo 'Dissqualify';
-   //echo '<br />';
-   //echo '<br />';  
-   
-   
+   echo 'Dissqualify';
+   echo '<br />';  
    
    return false;
    

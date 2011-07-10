@@ -217,3 +217,23 @@
 [04-Jul-2011 15:34:42] PHP Parse error:  syntax error, unexpected T_VARIABLE in /home/arenciel/public_html/app/admin_app_controller.php on line 326
 [04-Jul-2011 15:34:44] PHP Parse error:  syntax error, unexpected T_VARIABLE in /home/arenciel/public_html/app/admin_app_controller.php on line 326
 [04-Jul-2011 16:06:45] PHP Parse error:  syntax error, unexpected T_VARIABLE in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 722
+[08-Jul-2011 22:52:57] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 838
+[09-Jul-2011 17:12:49] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/managements_controller.php on line 215
+[09-Jul-2011 17:20:38] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/admin_app_controller.php on line 227
+[09-Jul-2011 17:20:39] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/admin_app_controller.php on line 227
+[09-Jul-2011 17:20:40] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/admin_app_controller.php on line 227
+[09-Jul-2011 18:16:32] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 351
+[10-Jul-2011 13:57:35] PHP Fatal error:  Call to undefined method SalesController::eligibleForDirectProfit() in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 276
+[10-Jul-2011 13:58:09] PHP Fatal error:  Call to undefined method SalesController::eligibleForDirectProfit() in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 276
+[10-Jul-2011 13:58:11] PHP Fatal error:  Call to undefined method SalesController::eligibleForDirectProfit() in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 276
+[10-Jul-2011 13:58:12] PHP Fatal error:  Call to undefined method SalesController::eligibleForDirectProfit() in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 276
+[10-Jul-2011 22:11:16] PHP Parse error:  syntax error, unexpected T_BOOLEAN_AND in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 638
+[10-Jul-2011 22:11:57] PHP Parse error:  syntax error, unexpected T_BOOLEAN_AND in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 638
+[10-Jul-2011 22:30:08] PHP Parse error:  syntax error, unexpected T_ECHO in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 530
+[10-Jul-2011 23:01:01] PHP Parse error:  syntax error, unexpected ';', expecting ')' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 806
+[10-Jul-2011 23:01:10] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1369
+[10-Jul-2011 23:01:10] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1369
+[10-Jul-2011 23:01:11] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1374
+[10-Jul-2011 23:01:11] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1374
+[10-Jul-2011 23:01:11] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1374
+[10-Jul-2011 23:01:11] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1374

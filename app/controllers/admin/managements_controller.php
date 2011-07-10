@@ -24,6 +24,59 @@ class ManagementsController extends AdminAppController
   //Display all controls that provided by the system.
 	}
 	
+	
+	//Making sure that the payee is still within the 24 months pay period.
+ function admin_eligible($payee=null)
+ {
+   
+  $payee = '0103298993';
+   
+  //Getting the payee joined date.
+  $fields = array('DATE_FORMAT(Member.created,"%Y-%m-%d") as date_joined','Member.id');
+  $conditions = array('Member.member_id'=>$payee);
+  $member_info = $this->Member->find('first',array('conditions'=>$conditions,'fields'=>$fields));
+ 
+  $date_joined = explode('-',$member_info[0]['date_joined']);
+  
+  //Determine the period
+  if($date_joined[2] >= 22)
+  {
+   $default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1],22,$date_joined[0]));
+   $default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]+1),21,$date_joined[0]));
+  }                               
+  else
+  {
+   $default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1]-1,22,$date_joined[0]));
+   $default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]),21,$date_joined[0]));
+  }
+    
+  $default_start_date = explode("-",$default_start_date);
+  $default_until_date = explode("-",$default_until_date);
+  
+  $default_start_date = date("Ymd",mktime(0,0,0,$default_start_date[1]+23,22,$default_start_date[0]));
+  $default_until_date = date("Ymd",mktime(0,0,0,($default_until_date[1])+23,21,$default_until_date[0]));
+  
+  //Getting the sales period
+  $conditions = array(
+  'Sale.member_id'=>$member_info['Member']['id'],
+  'DATE_FORMAT(Sale.default_period_start,"%Y%m%d") >= ' => $default_until_date
+  );
+  
+  $sale_info = $this->Sale->find('count',array('conditions'=>$conditions));
+  
+  if($sale_info >= 1)//not eligible for giving profit to direct and group sales.
+  {
+   return false;
+  }
+  else
+  {
+   return true; 
+  }
+  
+ } 
+	
+	
+	/*
  function admin_getbroughtover()
  {
   $member_info['Member']['sponsor_member_id'] = '0107552525';
@@ -44,9 +97,9 @@ class ManagementsController extends AdminAppController
     $this->admin_updateSetBroughtOver($member_info,$prev_member_info);
    }
   }
- 
   exit;
  }
+ */
 
 	
 	function admin_address()
@@ -86,7 +139,6 @@ class ManagementsController extends AdminAppController
    Configure::write('debug',2);	  
    $query = 'select DISTINCT default_period_start,default_period_until from sales order by default_period_start asc';
    $sales_info = $this->Sale->query($query);
-
    
    $query2 = 'select DISTINCT sponsor_member_id FROM hierarchy_managements';
    $sponsor_info = $this->HierarchyManagement->query($query2);
