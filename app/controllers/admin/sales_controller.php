@@ -273,7 +273,7 @@ class SalesController extends AdminAppController
    endif;
                 
    $this->set('_sales_information',$_SALES_INFORMATION);
-   $this->set('eligibleForDirectProfit',$this->eligibleForDirectProfit($parent,$payee));
+   $this->set('eligibleFromProfiting',$this->eligibleFromProfiting($payee));
 	}
 	
  /**

@@ -58,9 +58,17 @@ class HierachiesController extends AdminAppController
   {
     if(isset($this->data['ViewHierarchyManagementReport']['sponsor_member_id']))
     {
-      $conditions[0] = array('ViewHierarchyManagementReport.sponsor_member_id LIKE '=> '%'.trim($this->data['ViewHierarchyManagementReport']['sponsor_member_id']).'%');
-      $this->paginate['limit'] = 99999;
+      $conditions[] = array('ViewHierarchyManagementReport.sponsor_member_id LIKE '=> '%'.trim($this->data['ViewHierarchyManagementReport']['sponsor_member_id']).'%');
     }
+    
+    if(isset($this->data['ViewHierarchyManagementReport']['sponsor_name']))
+    {
+      $this->data['ViewHierarchyManagementReport']['sponsor_name'] = strtolower($this->data['ViewHierarchyManagementReport']['sponsor_name']);
+      $conditions[] = array('LOWER(ViewHierarchyManagementReport.sponsor_name) LIKE '=> '%'.trim($this->data['ViewHierarchyManagementReport']['sponsor_name']).'%');      
+    }
+    
+    $this->paginate['limit'] = 99999;
+    
   }
   
   $parent_lists = $this->paginate('ViewHierarchyManagementReport',$conditions);
@@ -74,6 +82,8 @@ class HierachiesController extends AdminAppController
   $hierachy_lists = $this->HierarchyManagement->findBySponsorMemberId($this->userinfo['user_id']);//Find agent by user id.
   $this->set('hierachy_lists',$hierachy_lists);
  }
+ 
+ 
  
  function admin_delete()
  {
@@ -368,6 +378,24 @@ class HierachiesController extends AdminAppController
   return json_encode($pure_child);  
  }
  
+  //Look for possible results using digit member id.
+  function admin_getsponsorname()
+  {
+   Configure::write('debug',0);
+   //Admin , search for all users in DB
+   $groupOfUserNames = array();
+   $this->layout = 'ajax';
+   $this->autoRender = false;
+   $_GET['query'] = (Sanitize::escape($_GET['query']));
+   $_GET['query'] = strtolower($_GET['query']); 
+   $possibleResults = $this->ViewHierarchyManagementReport->find('all',array('conditions' => array('LOWER(sponsor_name) LIKE ' => '%'.trim($_GET['query']).'%'),'fields' => array('DISTINCT sponsor_name') ));
+   foreach($possibleResults as $model => $perdata):
+    $groupOfUserMemberID[] = $perdata['ViewHierarchyManagementReport']['sponsor_name'];
+   endforeach; 
+   echo "{query:'".$_GET['query']."',suggestions:".json_encode($groupOfUserMemberID)."}";
+   exit();
+ }
+
  
  function admin_view_pdf($member_id)
  { 
@@ -769,11 +797,13 @@ class HierachiesController extends AdminAppController
      $group_member_info =$this->PaidContributor->find('all',
        array
        (
+        'field' => array('DISTINCT member_id'),
         'conditions' => array(
                    'level_1' => $member_info['Member']['member_id'],
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
-                   )
+                   ),
+        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
        )
      );
      
@@ -818,11 +848,13 @@ class HierachiesController extends AdminAppController
      $group_member_info =$this->PaidContributor->find('all',
        array
        (
+        'field' => array('DISTINCT member_id'),
         'conditions' => array(
                    'level_2' => $member_info['Member']['member_id'],
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
-                   )
+                   ),
+        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
        )
      );
      
@@ -868,11 +900,13 @@ class HierachiesController extends AdminAppController
     $group_member_info =$this->PaidContributor->find('all',
        array
        (
+        'field' => array('DISTINCT member_id'),
         'conditions' => array(
                    'level_3' => $member_info['Member']['member_id'],
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
-                   )
+                   ),
+        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
        )
      );
      
@@ -917,11 +951,13 @@ class HierachiesController extends AdminAppController
      $group_member_info =$this->PaidContributor->find('all',
        array
        (
+        'field' => array('DISTINCT member_id'),
         'conditions' => array(
                    'level_4' => $member_info['Member']['member_id'],
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
-                   )
+                   ),
+        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
        )
      );
      
@@ -966,11 +1002,13 @@ class HierachiesController extends AdminAppController
     $group_member_info =$this->PaidContributor->find('all',
        array
        (
+        'field' => array('DISTINCT member_id'),
         'conditions' => array(
                    'level_5' => $member_info['Member']['member_id'],
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
-                   )
+                   ),
+        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
        )
      );
      
@@ -1015,11 +1053,13 @@ class HierachiesController extends AdminAppController
     $group_member_info =$this->PaidContributor->find('all',
        array
        (
+        'field' => array('DISTINCT member_id'),
         'conditions' => array(
                    'level_6' => $member_info['Member']['member_id'],
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
-                   )
+                   ),
+        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
        )
      );
      
