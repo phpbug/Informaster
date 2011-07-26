@@ -3,6 +3,7 @@ class Pioneer extends AppModel
 {
 	var $name = 'Pioneer';
 	var $validate = array(
+	
     //Email is act as username....
     'username' => array(
        'rule-username-1' => array(
@@ -18,6 +19,7 @@ class Pioneer extends AppModel
         'last' => true
        )
     ),
+    
     'current_password' => array(
        'rule-current_password-1' => array(
         'rule' => 'notEmpty',
@@ -38,6 +40,7 @@ class Pioneer extends AppModel
         'last' => true
        )
     ),
+    
     'password' => array(
        'rule-password-1' => array(
         'rule' => 'notEmpty',
@@ -58,6 +61,7 @@ class Pioneer extends AppModel
         'last' => true
        )
     ),
+    
     're_password' => array(
        'rule-re_password-1' => array(
         'rule' => 'notEmpty',
@@ -83,7 +87,8 @@ class Pioneer extends AppModel
         'required' => true,
         'last' => true
        )
-    ),
+    )
+    
   );
 	
 	

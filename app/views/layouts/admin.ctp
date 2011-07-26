@@ -19,7 +19,7 @@
   <?php echo $this->element('breadcrumb');?> 
   <div id="content-container"> 
     <div id="center-content"> <?php echo $content_for_layout; ?> </div>
-    <div id="left-content"> <?php echo $this->element('admin_side_menu');?>  </div>    
+    <!-- <div id="left-content"> <?php //echo $this->element('admin_side_menu');?>  </div> -->    
   </div>  
 </div>
 <?php

@@ -237,3 +237,111 @@
 [10-Jul-2011 23:01:11] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1374
 [10-Jul-2011 23:01:11] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1374
 [10-Jul-2011 23:01:11] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/hierachies_controller.php on line 1374
+[12-Jul-2011 14:53:12] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/views/elements/admin_sales_form_structure_confirmation.ctp on line 170
+[12-Jul-2011 22:10:45] PHP Parse error:  syntax error, unexpected ')', expecting '&' or T_VARIABLE in /home/arenciel/public_html/app/controllers/admin/managements_controller.php on line 29
+[14-Jul-2011 13:00:18] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 894
+[14-Jul-2011 13:14:48] PHP Parse error:  syntax error, unexpected $end, expecting ']' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 361
+[14-Jul-2011 13:15:44] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1171
+[14-Jul-2011 13:22:30] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/admin_app_controller.php on line 360
+[14-Jul-2011 13:22:30] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/admin_app_controller.php on line 360
+[14-Jul-2011 13:47:36] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/admin_app_controller.php on line 430
+[14-Jul-2011 13:47:37] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/admin_app_controller.php on line 430
+[14-Jul-2011 13:49:28] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 339
+[14-Jul-2011 13:49:30] PHP Warning:  Unterminated comment starting line 1133 in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1133
+[14-Jul-2011 13:49:30] PHP Parse error:  syntax error, unexpected $end, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1133
+[14-Jul-2011 13:50:27] PHP Parse error:  syntax error, unexpected $end, expecting ',' or ')' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 110
+[14-Jul-2011 13:58:19] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 339
+[14-Jul-2011 13:58:20] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 938
+[14-Jul-2011 13:58:22] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 938
+[14-Jul-2011 14:02:54] PHP Warning:  Unterminated comment starting line 1325 in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1325
+[14-Jul-2011 14:02:54] PHP Parse error:  syntax error, unexpected $end, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1325
+[14-Jul-2011 14:06:07] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 158
+[14-Jul-2011 14:06:08] PHP Parse error:  syntax error, unexpected $end, expecting ',' or ';' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 594
+[14-Jul-2011 14:43:04] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1209
+[14-Jul-2011 14:43:47] PHP Parse error:  syntax error, unexpected '/' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 920
+[14-Jul-2011 14:45:04] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 923
+[14-Jul-2011 15:00:24] PHP Warning:  Unterminated comment starting line 658 in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 658
+[14-Jul-2011 15:00:24] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 658
+[14-Jul-2011 15:05:24] PHP Parse error:  syntax error, unexpected T_ECHO in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 710
+[14-Jul-2011 15:05:26] PHP Parse error:  syntax error, unexpected T_ECHO in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 710
+[14-Jul-2011 15:25:49] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1153
+[14-Jul-2011 15:33:03] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 172
+[14-Jul-2011 15:33:03] PHP Parse error:  syntax error, unexpected T_STRING in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 173
+[14-Jul-2011 15:33:05] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 172
+[14-Jul-2011 15:33:05] PHP Parse error:  syntax error, unexpected T_STRING in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 173
+[14-Jul-2011 15:33:08] PHP Parse error:  syntax error, unexpected $end, expecting '(' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 988
+[14-Jul-2011 15:33:09] PHP Parse error:  syntax error, unexpected $end, expecting '(' in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 988
+[14-Jul-2011 15:33:11] PHP Warning:  Unterminated comment starting line 1244 in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1244
+[14-Jul-2011 15:33:11] PHP Parse error:  syntax error, unexpected $end, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1244
+[15-Jul-2011 20:15:43] PHP Parse error:  syntax error, unexpected ',' in /home/arenciel/public_html/app/controllers/admin/managements_controller.php on line 250
+[15-Jul-2011 20:15:44] PHP Parse error:  syntax error, unexpected ',' in /home/arenciel/public_html/app/controllers/admin/managements_controller.php on line 250
+[15-Jul-2011 20:15:45] PHP Parse error:  syntax error, unexpected ',' in /home/arenciel/public_html/app/controllers/admin/managements_controller.php on line 250
+[15-Jul-2011 20:16:02] PHP Parse error:  syntax error, unexpected ',' in /home/arenciel/public_html/app/controllers/admin/managements_controller.php on line 250
+[16-Jul-2011 10:14:15] PHP Parse error:  syntax error, unexpected ';', expecting ')' in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 558
+[16-Jul-2011 20:12:43] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1103
+[16-Jul-2011 20:16:06] PHP Warning:  Unterminated comment starting line 1143 in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1143
+[16-Jul-2011 20:16:06] PHP Parse error:  syntax error, unexpected $end, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1143
+[16-Jul-2011 20:47:40] PHP Parse error:  syntax error, unexpected ',' in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 663
+[16-Jul-2011 21:01:01] PHP Parse error:  syntax error, unexpected '{' in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 658
+[16-Jul-2011 21:07:33] PHP Parse error:  syntax error, unexpected ')' in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 654
+[16-Jul-2011 21:08:01] PHP Parse error:  syntax error, unexpected ')' in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 654
+[16-Jul-2011 21:08:50] PHP Parse error:  syntax error, unexpected ';', expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1196
+[16-Jul-2011 21:09:03] PHP Parse error:  syntax error, unexpected ';', expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1196
+[16-Jul-2011 21:10:36] PHP Parse error:  syntax error, unexpected ';', expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1196
+[16-Jul-2011 21:10:37] PHP Parse error:  syntax error, unexpected ';', expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1196
+[18-Jul-2011 22:19:21] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 644
+[18-Jul-2011 22:19:21] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 644
+[18-Jul-2011 22:30:08] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 1060
+[19-Jul-2011 09:40:26] PHP Parse error:  syntax error, unexpected T_DOUBLE_ARROW in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1244
+[19-Jul-2011 09:40:29] PHP Parse error:  syntax error, unexpected T_DOUBLE_ARROW in /home/arenciel/public_html/app/controllers/admin/systems_controller.php on line 1244
+[19-Jul-2011 22:01:54] PHP Parse error:  syntax error, unexpected '.' in /home/arenciel/public_html/app/controllers/admin/managements_controller.php on line 308
+[21-Jul-2011 09:21:31] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:21:33] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:22:07] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:22:07] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:22:07] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:22:19] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:23:17] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:24:22] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 984
+[21-Jul-2011 09:24:22] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 984
+[21-Jul-2011 09:24:26] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1999
+[21-Jul-2011 09:25:55] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:26:32] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:28:55] PHP Warning:  Unterminated comment starting line 611 in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 611
+[21-Jul-2011 09:28:55] PHP Parse error:  syntax error, unexpected $end, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 611
+[21-Jul-2011 09:28:55] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1313
+[21-Jul-2011 09:28:56] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1313
+[21-Jul-2011 09:28:57] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1428
+[21-Jul-2011 09:28:58] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:29:00] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:29:01] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:29:02] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1950
+[21-Jul-2011 09:29:17] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 945
+[21-Jul-2011 09:29:18] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1364
+[21-Jul-2011 09:29:19] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1961
+[21-Jul-2011 09:29:19] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1961
+[21-Jul-2011 09:29:20] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1961
+[21-Jul-2011 09:29:20] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1961
+[21-Jul-2011 09:29:21] PHP Parse error:  syntax error, unexpected '}' in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1961
+[21-Jul-2011 09:30:59] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1555
+[21-Jul-2011 09:33:31] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:31] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:31] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:32] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:32] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:32] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:33] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:33] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:33] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:33] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:33:33] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1396
+[21-Jul-2011 09:35:55] PHP Parse error:  syntax error, unexpected T_IF, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1388
+[21-Jul-2011 09:48:07] PHP Parse error:  syntax error, unexpected T_VARIABLE, expecting T_FUNCTION in /home/arenciel/public_html/app/controllers/admin/sales_controller.php on line 1307
+[21-Jul-2011 11:41:32] PHP Fatal error:  Call to a member function find() on a non-object in /home/arenciel/public_html/app/controllers/admin/memberships_controller.php on line 1144
+[21-Jul-2011 11:43:15] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/memberships_controller.php on line 950
+[21-Jul-2011 11:43:16] PHP Warning:  Unexpected character in input:  ''' (ASCII=39) state=1 in /home/arenciel/public_html/app/controllers/admin/memberships_controller.php on line 1516
+[21-Jul-2011 11:43:16] PHP Parse error:  syntax error, unexpected '<' in /home/arenciel/public_html/app/controllers/admin/memberships_controller.php on line 1516
+[24-Jul-2011 01:44:29] PHP Parse error:  syntax error, unexpected $end in /home/arenciel/public_html/app/controllers/admin/members_controller.php on line 928
+[26-Jul-2011 21:16:57] PHP Fatal error:  Call to a member function find() on a non-object in /home/arenciel/public_html/app/models/member.php on line 492
+[26-Jul-2011 21:17:47] PHP Fatal error:  Call to a member function find() on a non-object in /home/arenciel/public_html/app/models/member.php on line 492
+[26-Jul-2011 21:19:45] PHP Fatal error:  Call to a member function find() on a non-object in /home/arenciel/public_html/app/models/member.php on line 492

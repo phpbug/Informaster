@@ -187,54 +187,71 @@ var $hunt_date_before;
   *@Objective : To make sure the direct profit is earn/gain and within the range of 2 years time. 
   *@$parent : The payee is also a child in Hierachy table
   **/
- function eligibleFromProfiting($payee=null)
+ function eligibleFromProfiting($payee,$default_period_start=null,$default_period_until=null)
  {    
   if(empty($payee))
   {
    $this->log('system couldn\'t retrieve information on payee  :: '.__LINE__.'  :: '.__FILE__);
    return false;
-  } 
+  }
+
+  if($this->debug)
+  {  
+   echo '- Checking Payee <b>'.$payee.'</b> From Whether Qualify From <b>24 Months</b> Of Profiting';
+   echo '<br />';
+  }
    
-    //Getting the payee joined date.
+  //Getting the payee joined date.
   $fields = array('DATE_FORMAT(Member.created,"%Y-%m-%d") as date_joined','Member.id');
   $conditions = array('Member.member_id'=>$payee);
   $member_info = $this->Member->find('first',array('conditions'=>$conditions,'fields'=>$fields));
  
   $date_joined = explode('-',$member_info[0]['date_joined']);
-  
+    
   //Determine the period
   if($date_joined[2] >= 22)
   {
-   $default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1],22,$date_joined[0]));
-   $default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]+1),21,$date_joined[0]));
+   $__default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1],22,$date_joined[0]));
+   $__default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]+1),21,$date_joined[0]));
   }                               
   else
   {
-   $default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1]-1,22,$date_joined[0]));
-   $default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]),21,$date_joined[0]));
+   $__default_start_date = date("Y-m-d",mktime(0,0,0,$date_joined[1]-1,22,$date_joined[0]));
+   $__default_until_date = date("Y-m-d",mktime(0,0,0,($date_joined[1]),21,$date_joined[0]));
   }
     
-  $default_start_date = explode("-",$default_start_date);
-  $default_until_date = explode("-",$default_until_date);
+  $default_start_date__ = explode("-",$__default_start_date);
+  $default_until_date__ = explode("-",$__default_until_date);
   
-  $default_start_date = date("Ymd",mktime(0,0,0,$default_start_date[1]+23,22,$default_start_date[0]));
-  $default_until_date = date("Ymd",mktime(0,0,0,($default_until_date[1])+23,21,$default_until_date[0]));
+  $_default_start_date = date("Ymd",mktime(0,0,0,$default_start_date__[1]+23,22,$default_start_date__[0]));
+  $_default_until_date = date("Ymd",mktime(0,0,0,($default_until_date__[1])+23,21,$default_until_date__[0]));
   
-  //Getting the sales period
-  $conditions = array(
-  'Sale.member_id'=>$member_info['Member']['id'],
-  'DATE_FORMAT(Sale.default_period_start,"%Y%m%d") >= ' => $default_until_date
-  );
-  
-  $sale_info = $this->Sale->find('count',array('conditions'=>$conditions));
-  
-  if($sale_info >= 1)//not eligible for giving profit to direct and group sales.
+  if($this->debug)
   {
+   echo '- Payee Date Joined :: <b>'.$member_info[0]['date_joined'].'</b> Under Period <b>'.date("Y-m-d",strtotime($__default_start_date)).' ~ '.date("Y-m-d",strtotime($__default_until_date)).'</b>';
+   echo '<br />';
+   echo '- Expiry Eligible After <b>24 Months</b> :: <b>'.date("Y-m-d",strtotime($_default_start_date)).' ~ '.date("Y-m-d",strtotime($_default_until_date)).'</b>';
+   echo '<br />';
+   echo '- Has Payee Expire And Now Allow To Get Commission '.date("Y-m-d",strtotime($default_period_until)).' >= '.date("Y-m-d",strtotime($_default_until_date)).' - ';
+  }
+  
+  if($default_period_until >= $_default_until_date)
+  {
+   if($this->debug)
+   {
+   echo '<b>Yes</b>';
+   echo '<br />';
+   }
    return false;
   }
   else
   {
-   return true; 
+   if($this->debug)
+   {
+   echo '<b>No</b>';
+   echo '<br />';
+   }
+   return true;
   }
     
  }
@@ -325,6 +342,12 @@ var $hunt_date_before;
   $member_commission['MemberCommission']['default_period_until'] = $this->hunt_date_after;
   $member_commission['MemberCommission']['target_month']         = date("Y-m-d",strtotime($target_month));
   @$member_commission['MemberCommission'][$hierarchy_level]     += $insurance_paid;
+  
+  if($this->debug)
+  {
+   echo 'Inserted Payee Into Sponsor In Date :: '.$this->hunt_date_before.' ~ '.$this->hunt_date_after;
+   echo '<br />';
+  }
    
   $this->MemberCommission->create();
   if(!$this->MemberCommission->save($member_commission,false))
@@ -334,9 +357,11 @@ var $hunt_date_before;
   }
   
   // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-   
-  echo $payee.' paid '.$per_parent.' in level '.$hierarchy_level;
-  echo '<br />';
+  if($this->debug)
+  { 
+   echo '- <b>'.$payee.'</b> Paid <b>'.$per_parent.'</b> In Level <b>'.$hierarchy_level.'</b>';
+   echo '<br />';
+  }
   
   $paidContributor['PaidContributor'][$hierarchy_level] = $per_parent; 
   $paidContributor['PaidContributor']['member_id'] = $payee;    
@@ -348,13 +373,19 @@ var $hunt_date_before;
   $this->PaidContributor->create(); 
   if($this->PaidContributor->save($paidContributor,false))
   {
-   echo 'Inserted Into Contributor';
-   echo '<br />';
+   if($this->debug)
+   {
+    echo 'Inserted Into Contributor';
+    echo '<br />';
+   }
   }
   else
   {
-   echo 'Failed To Insert Into Contributor';
-   echo '<br />';
+   if($this->debug)
+   { 
+    echo 'Failed To Insert Into Contributor';
+    echo '<br />';
+   }
   }
   
   // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 $(document).ready(function(){
  
+   //------------------------------------------------------------------------------------------------------------------------------------
+  
    //For pagination 
    if(!$('.pagination').children().first().is(":has(a)"))
    {
@@ -10,62 +12,16 @@ $(document).ready(function(){
     $('.pagination').children().last().addClass('children');
    }
   
-  /* 
-  //For hierachy list page
-  $('.children').each(function(){
-    var dom_id = $(this).attr('id'); 
-    if(dom_id != '')
-    {
-       //For user management tip
-       $('#'+dom_id).tooltip({
-           tip:'#tiphierachy-'+dom_id+'',
-           offset:[20,0],
-           effect: 'slide',
-           delay: 200,
-           position: 'top center'
-       }).dynamic({
-         bottom: {
-           direction: 'down',
-           bounce: true
-         }
-       });
-   }
- });
-     
-  //For user management tip
-  $('#user-management').tooltip({
-      tip:'#tipuser',
-      offset:[20,0],
-      effect: 'slide',
-      delay: 200,
-      position: 'top center'
-  }).dynamic({
-    bottom: {
-      direction: 'down',
-      bounce: true
-    }
-  });
- 
+  //For Pioneer Only
+  //------------------------------------------------------------------------------------------------------------------------------------
   
-  //$("#created").datepicker({dateFormat: 'yy-mm-dd'});
   
-  //For user management binary tree tip
-  $('#binary-tree').tooltip({
-      tip:'#tipbinarytree',
-      offset:[20,0],
-      effect: 'slide',
-      delay: 200,
-      position: 'top center'
-  }).dynamic({
-    bottom: {
-      direction: 'down',
-      bounce: true
-    }
-  });
-   */
+  
+  //For member only
+  //------------------------------------------------------------------------------------------------------------------------------------
    
   $('#reset_password').click(function(){
-   
+  
    var total_reset=0;
    
    //Count total checked
@@ -87,13 +43,14 @@ $(document).ready(function(){
      
     $('#ResultsForm').attr('action',desire_location.replace(re,"reset_password")); 
     $('#ResultsForm').submit(); 
-     
-     
+      
    }
    
    return false;
   });
   
+  //------------------------------------------------------------------------------------------------------------------------------------
+   
   $('#delete').click(function(){
    
    var total_checked=0;
@@ -115,6 +72,8 @@ $(document).ready(function(){
    
    return false;
   });
+  
+  //------------------------------------------------------------------------------------------------------------------------------------
 
   /*For checkbox-ing all the checkbox in a forms*/
   $('#all').click(function(){
@@ -123,6 +82,8 @@ $(document).ready(function(){
    })
    return false;
   });
+  
+  //------------------------------------------------------------------------------------------------------------------------------------
 
   /*For uncheckbox-ing all the checkbox in a forms*/
   $('#none').click(function(){
@@ -132,13 +93,14 @@ $(document).ready(function(){
    return false;
   });
   
+  //------------------------------------------------------------------------------------------------------------------------------------
+  
   $('input[type="text"]:not("[id=beneficiary_ic_num_1],[id=beneficiary_ic_num_2],[id=beneficiary_ic_num_3],[id=member_num_1],[id=member_num_2],[id=member_num_3],[id=member_num_4],[id=new_ic_num_1],[id=new_ic_num_2],[id=new_ic_num_3]")').css('width','200px');
   $('[id=beneficiary_ic_num_1],[id=member_num_1],[id=new_ic_num_1]').css('width','13%');
   $('[id=beneficiary_ic_num_2],[id=member_num_2],[id=member_num_4],[id=new_ic_num_2]').css('width','7%');
   $('[id=beneficiary_ic_num_3],[id=member_num_3],[id=new_ic_num_3]').css('width','10%');
-  
-  
   $('[id=address_1],[id=address_2],[id=address_3]').css('width','50%');
   
+  //------------------------------------------------------------------------------------------------------------------------------------
   
   });

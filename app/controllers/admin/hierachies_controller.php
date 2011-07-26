@@ -56,12 +56,12 @@ class HierachiesController extends AdminAppController
   $conditions = array();
   if(!empty($this->data))
   {
-    if(isset($this->data['ViewHierarchyManagementReport']['sponsor_member_id']))
+    if(!empty($this->data['ViewHierarchyManagementReport']['sponsor_member_id']))
     {
       $conditions[] = array('ViewHierarchyManagementReport.sponsor_member_id LIKE '=> '%'.trim($this->data['ViewHierarchyManagementReport']['sponsor_member_id']).'%');
     }
     
-    if(isset($this->data['ViewHierarchyManagementReport']['sponsor_name']))
+    if(strlen($this->data['ViewHierarchyManagementReport']['sponsor_name']) > 0)
     {
       $this->data['ViewHierarchyManagementReport']['sponsor_name'] = strtolower($this->data['ViewHierarchyManagementReport']['sponsor_name']);
       $conditions[] = array('LOWER(ViewHierarchyManagementReport.sponsor_name) LIKE '=> '%'.trim($this->data['ViewHierarchyManagementReport']['sponsor_name']).'%');      
@@ -556,7 +556,7 @@ class HierachiesController extends AdminAppController
      )
    );
    */ 
-   
+   /*
    if($member_commission_info['MemberCommission']['accumulated_profit'] < 1)
    {
      $member_commission_info_2 = $this->MemberCommission->find('first',
@@ -572,7 +572,7 @@ class HierachiesController extends AdminAppController
     
     //Setting
     $member_commission_info['MemberCommission']['accumulated_profit'] = $member_commission_info_2['MemberCommission']['accumulated_profit'];
-   }
+   }*/
    
    
    
@@ -803,24 +803,38 @@ class HierachiesController extends AdminAppController
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                    ),
-        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
+        'group' => array('member_id')
        )
      );
      
+      
+     $previous_sponsor_member_id = 0;
      foreach($group_member_info as $member_index => $group_member)
      {
        if(empty($group_member['PaidContributor']['level_1']))
        {
         continue;
        }
-       
-       $fields=array('name');
+
        $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
-       $group_name_info = $this->Member->find('first',array('fields'=>$fields,'conditions'=>$conditions));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
+       
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -854,25 +868,37 @@ class HierachiesController extends AdminAppController
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                    ),
-        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
+        'group' => array('member_id')
        )
      );
      
      
+     $previous_sponsor_member_id = 0;
      foreach($group_member_info as $member_index => $group_member)
      {
        if(empty($group_member['PaidContributor']['level_2']))
        {
         continue;
        }
-       
-       $fields=array('name');
+
        $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
-       $group_name_info = $this->Member->find('first',array('fields'=>$fields,'conditions'=>$conditions));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -906,24 +932,36 @@ class HierachiesController extends AdminAppController
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                    ),
-        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
+        'group' => array('member_id')
        )
      );
      
+     $previous_sponsor_member_id = 0;
      foreach($group_member_info as $member_index => $group_member)
      {
        if(empty($group_member['PaidContributor']['level_3']))
        {
         continue;
        }
-       
-       $fields=array('name');
+
        $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
-       $group_name_info = $this->Member->find('first',array('fields'=>$fields,'conditions'=>$conditions));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -957,24 +995,36 @@ class HierachiesController extends AdminAppController
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                    ),
-        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
+        'group' => array('member_id')
        )
      );
      
+     $previous_sponsor_member_id = 0;
      foreach($group_member_info as $member_index => $group_member)
      {
        if(empty($group_member['PaidContributor']['level_4']))
        {
         continue;
        }
-       
-       $fields=array('name');
+
        $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
-       $group_name_info = $this->Member->find('first',array('fields'=>$fields,'conditions'=>$conditions));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -1008,24 +1058,36 @@ class HierachiesController extends AdminAppController
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                    ),
-        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
+        'group' => array('member_id')
        )
      );
      
+     $previous_sponsor_member_id = 0;
      foreach($group_member_info as $member_index => $group_member)
      {
        if(empty($group_member['PaidContributor']['level_5']))
        {
         continue;
        }
-       
-       $fields=array('name');
+
        $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
-       $group_name_info = $this->Member->find('first',array('fields'=>$fields,'conditions'=>$conditions));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -1059,24 +1121,36 @@ class HierachiesController extends AdminAppController
                    'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_start_date)),
                    'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_until_date))
                    ),
-        'group' => array('member_id','default_period_start','default_period_until','target_month','insurance_paid')
+        'group' => array('member_id')
        )
      );
      
+     $previous_sponsor_member_id = 0;
      foreach($group_member_info as $member_index => $group_member)
      {
        if(empty($group_member['PaidContributor']['level_6']))
        {
         continue;
        }
-       
-       $fields=array('name');
+
        $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
-       $group_name_info = $this->Member->find('first',array('fields'=>$fields,'conditions'=>$conditions));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
        
        $html .= '
        <tr>
-        <td width="30%" align="center">'.ucwords(strtolower($group_member['PaidContributor']['member_id'])).'</td>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
         <td width="1%"></td>
         <td width="3%" align="right"></td>
         <td width="13%" align="right"></td>
@@ -1101,12 +1175,12 @@ class HierachiesController extends AdminAppController
      </tr>
      <tr><td colspan="7">&nbsp;</td></tr>';
 
-     if(isset($remark))
+     if(isset($remark) && strlen($remark) > 0)
    	 {	
    	 $html .='
         <tr>
          <td align="center"></td>
-         <td align="left" colspan="6"> *'.$remark.' </td>
+         <td align="left" colspan="6"> <b>Misc</b>'.$remark.' </td>
          <td></td>
         </tr>';
     	}

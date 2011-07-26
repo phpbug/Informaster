@@ -273,7 +273,7 @@ class SalesController extends AdminAppController
    endif;
                 
    $this->set('_sales_information',$_SALES_INFORMATION);
-   $this->set('eligibleFromProfiting',$this->eligibleFromProfiting($payee));
+   //$this->set('eligibleFromProfiting',$this->eligibleFromProfiting($payee));
 	}
 	
  /**
@@ -989,7 +989,7 @@ class SalesController extends AdminAppController
  
  function admin_generate_monthly_report()
  {
-   
+
   if(isset($this->data['MemberCommission']['default_period_start'],$this->data['MemberCommission']['default_period_until']))
   {
   
@@ -1250,7 +1250,7 @@ class SalesController extends AdminAppController
     'fields' => array('member_id')
     )
    );
-
+   
    //---------------------------------------------------------------------------------------------------
    
    //count total direct profit & also get the direct profit's member_id,name,paid,target_month,etcc
@@ -1262,23 +1262,18 @@ class SalesController extends AdminAppController
                    
    $conditions = array(
    'member_id' => $group_of_children,
-   'DATE_FORMAT(default_period_start,"%Y%m%d") >= ' => $default_period_start,
-   'DATE_FORMAT(default_period_until,"%Y%m%d") <= ' => $default_period_until
+   'calculated' => 'Y',
+   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
    );
    
-   $direct_profits = $this->ViewSaleReport->find('all',array('conditions'=>$conditions,'fields'=>$fields));
-      
+   $order = array('target_month' => 'ASC');
+   
+   $direct_profits = $this->ViewSaleReport->find('all',array('conditions'=>$conditions,'fields'=>$fields,'order'=>$order));
+   
    //Get parent's personal information
    //---------------------------------------------------------------------------------------------------
-   $member_info = $this->Member->find('first',
-    array(
-     'conditions' => array('Member.member_id'=>$group_of_member[$position]) , 
-     'fields' => array('Member.id',
-                   'Member.name',
-                   'Member.member_id',
-                   'Member.address')
-     )
-    );
+   $member_info = $this->Member->find('first',array( 'conditions' => array('Member.member_id' => $group_of_member[$position])));
    //---------------------------------------------------------------------------------------------------
    
    $member_commission_info = $this->MemberCommission->find('first',
@@ -1286,18 +1281,27 @@ class SalesController extends AdminAppController
      (
       'conditions' => array(
                  'member_id' => $member_info['Member']['member_id'],
-                 'DATE_FORMAT(default_period_start,"%Y%m%d") >= '=>$default_period_start,
-                 'DATE_FORMAT(default_period_until,"%Y%m%d") <= '=>$default_period_until
+                 'DATE_FORMAT(default_period_start,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                 'DATE_FORMAT(default_period_until,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
                  )
      )
    );
    
-   if(!isset($member_commission_info['MemberCommission']['id']))
-   {
-    //$this->Session->setFlash('No commission is share by this user '.$member_info['Member']['member_id'].' for the selected month','default',array('class'=>'undone'));
-    //$this->redirect('/admin/hierachies/downline/'.$member_info['Member']['member_id']);
-   }
-
+   /*
+   $group_member_info =$this->PaidContributor->find('all',
+     array
+     (
+      'conditions' => array(
+                 'sponsor_member_id' => $member_info['Member']['member_id'],
+                 'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                 'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
+                 )
+     )
+   );
+    
+ 
+   }*/
+   
    //---------------------------------------------------------------------------------------------------
    
    $hierarchy = $this->Hierarchy->find('first');
@@ -1311,6 +1315,8 @@ class SalesController extends AdminAppController
    $group_sales_bonus_4 = (($hierarchy['Hierarchy']['level_4']/100)*$member_commission_info['MemberCommission']['level_4']);
    $group_sales_bonus_5 = (($hierarchy['Hierarchy']['level_5']/100)*$member_commission_info['MemberCommission']['level_5']);
    $group_sales_bonus_6 = (($hierarchy['Hierarchy']['level_6']/100)*$member_commission_info['MemberCommission']['level_6']);
+   $miscellaneous       = $member_commission_info['MemberCommission']['miscellaneous'];
+   $remark              = $member_commission_info['MemberCommission']['remark'];
    
    $group_bonus = ($member_commission_info['MemberCommission']['level_1']+$member_commission_info['MemberCommission']['level_2']+$member_commission_info['MemberCommission']['level_3']+$member_commission_info['MemberCommission']['level_4']+$member_commission_info['MemberCommission']['level_5']+$member_commission_info['MemberCommission']['level_6']);
    $new_group_sales_bonus = ($group_sales_bonus_1 + $group_sales_bonus_2 + $group_sales_bonus_3 + $group_sales_bonus_4 + $group_sales_bonus_5 + $group_sales_bonus_6);
@@ -1326,43 +1332,40 @@ class SalesController extends AdminAppController
    $group_sales_bonus_5 = number_format($group_sales_bonus_5, 2, '.', '');
    $group_sales_bonus_6 = number_format($group_sales_bonus_6, 2, '.', '');
    
-   $member_commission_info['MemberCommission']['level_1'] = number_format($member_commission_info['MemberCommission']['level_1'], 2, '.', '');
-   @$member_commission_info['MemberCommission']['level_2'] = number_format($member_commission_info['MemberCommission']['level_2'], 2, '.', '');
-   @$member_commission_info['MemberCommission']['level_3'] = number_format($member_commission_info['MemberCommission']['level_3'], 2, '.', '');
-   @$member_commission_info['MemberCommission']['level_4'] = number_format($member_commission_info['MemberCommission']['level_4'], 2, '.', '');
-   @$member_commission_info['MemberCommission']['level_5'] = number_format($member_commission_info['MemberCommission']['level_5'], 2, '.', '');
-   @$member_commission_info['MemberCommission']['level_6'] = number_format($member_commission_info['MemberCommission']['level_6'], 2, '.', '');
+   @$member_commission_info['MemberCommission']['level_1'] = number_format($member_commission_info['MemberCommission']['level_1'], 2, '.', ',');
+   @$member_commission_info['MemberCommission']['level_2'] = number_format($member_commission_info['MemberCommission']['level_2'], 2, '.', ',');
+   @$member_commission_info['MemberCommission']['level_3'] = number_format($member_commission_info['MemberCommission']['level_3'], 2, '.', ',');
+   @$member_commission_info['MemberCommission']['level_4'] = number_format($member_commission_info['MemberCommission']['level_4'], 2, '.', ',');
+   @$member_commission_info['MemberCommission']['level_5'] = number_format($member_commission_info['MemberCommission']['level_5'], 2, '.', ',');
+   @$member_commission_info['MemberCommission']['level_6'] = number_format($member_commission_info['MemberCommission']['level_6'], 2, '.', ',');
 
-   $total_bonus = number_format($total_bonus, 2, '.', '');      
-   $group_bonus = number_format($group_bonus, 2, '.', '');
-   $miscellaneous = (int)0;//number_format($miscellaneous, 2, '.', '');
-   $new_personal_bonus = number_format($new_personal_bonus, 2, '.', '');
-   $total_bonus_without_deduction = number_format($total_bonus_without_deduction, 2, '.', '');
-   $new_group_sales_bonus = number_format($new_group_sales_bonus, 2, '.', '');
-   @$accumulated_profit = number_format($member_commission_info['MemberCommission']['accumulated_profit'], 2, '.', '');
+
+   $total_bonus = number_format($total_bonus, 2, '.', ',');      
+   $group_bonus = number_format($group_bonus, 2, '.', ',');
+   $miscellaneous = number_format($miscellaneous, 2, '.', ',');
+   $new_personal_bonus = number_format($new_personal_bonus, 2, '.', ',');
+   $total_bonus_without_deduction = number_format($total_bonus_without_deduction, 2, '.', ',');
+   $new_group_sales_bonus = number_format($new_group_sales_bonus, 2, '.', ',');
+   @$accumulated_profit = number_format($member_commission_info['MemberCommission']['accumulated_profit'], 2, '.', ',');
    
    $max_looping = ceil(sizeof($direct_profits)/$per_record_page);
    if(!isset($max_looping) | $max_looping < 1)
    {
     $max_looping = 1;
    }
-   
+ 
    // ----------------------------
    
    while($page_break < $max_looping )
    {
-     
      $pdf->AddPage();
-     
      $html = '
-     <style>
-     #test{border-top:1px solid black;border-bottom:1px solid black;}
-     </style>
+     <style>#test{border-top:1px solid black;border-bottom:1px solid black;}</style>
      <table cellspacing="0" border="0" width="100%">
      <tr>
      	<td colspan="9" height="20" align="center">
        <b>
-        <font face="calibri" color="#000000">Monthly Bonus Statement For '.date("Y/m",(strtotime($default_period_start))).'</font>
+        <font face="calibri" color="#000000">Monthly Bonus Statement For '.date("Y/m",(strtotime($default_period_until))).'</font>
        </b>
       </td>
       </tr>
@@ -1374,66 +1377,100 @@ class SalesController extends AdminAppController
       <tr>
        <td>'.ucwords(strtolower($member_info['Member']['name'])).' - (IFM '.$member_info['Member']['member_id'].') </td>
       </tr>';
-      $address = ucwords(strtolower($member_info['Member']['address']));
-      $address = nl2br($address);
-      $expode_address = explode(',',$address);
-      foreach($expode_address as $index => $partial_address)
+      
+      
+      if(isset($member_info['Member']['address']) && !empty($member_info['Member']['address']))
+      {
+       $address = ucwords(strtolower($member_info['Member']['address']));
+       $address = nl2br($address);
+       $expode_address = explode(',',$address);
+       foreach($expode_address as $index => $partial_address)
+       {
+        $html .= '<tr><td>';
+        $html .= $partial_address;
+        if( (sizeof($expode_address)-1) == $index ){
+         $html .= '.';
+        }else{
+         $html .= ',';
+        }
+        $html .= '</td></tr>';
+       }
+      }
+      else
       {
        $html .= '<tr><td>';
-       $html .= $partial_address;
-       if( (sizeof($expode_address)-1) == $index ){
-        $html .= '.';
-       }else{
-        $html .= ',';
-       }
+       $html .= @ucwords(strtolower($member_info['Member']['address_1']));
+       $html .= '<br />';
+       $html .= @ucwords(strtolower($member_info['Member']['address_2']));
+       $html .= '<br />';
+       $html .= @ucwords(strtolower($member_info['Member']['address_3']));
+       $html .= '<br />';
+       $html .= @ucwords(strtolower($member_info['Member']['postal_code'])).' '.@ucwords(strtolower($member_info['Member']['city']));
+       $html .= '<br />';
+       $html .= @ucwords(strtolower($member_info['Member']['state']));
+       $html .= '<br />';
        $html .= '</td></tr>';
       }
+      
       $html .='<tr>
        <td>&nbsp;</td>
       </tr>
      </table>
+     
      <table cellpadding="0" cellspacing="0" border="0" width="100%">
-     <tr align="left">
-     	<td colspan="3" height="20"><b>Performance Summary</b></td>
-      <td colspan="3" height="20"><b>Bonus Summary</b></td>
+     
+     <tr>
+     	<td width="46.9%" colspan="4" height="20"><b>Performance Summary</b></td>
+     	<td width="6.2%">&nbsp;</td>
+      <td width="46.9%" colspan="4" height="20"><b>Bonus Summary</b></td>
      </tr>
+     
      <tr>
       <td width="30%">Personal Sales</td>
-      <td align="center" width="1%">:</td>
-      <td width="19%">&nbsp;&nbsp;RM '.@number_format($member_commission_info['MemberCommission']['level_0'], 2, '.', '').'</td>
+      <td width="1%" align="center">:</td>
+      <td width="3%" align="right">RM</td>
+      <td align="right" width="13%">'.@number_format($member_commission_info['MemberCommission']['level_0'], 2, '.', ',').'</td>
+      <td width="6%">&nbsp;</td>
       <td width="30%">Personal Bonus</td>
-      <td align="center" width="1%">:</td>';
-      
-      $html .= '<td width="19%">&nbsp;&nbsp;RM '.$new_personal_bonus.'</td>
+      <td width="1%" align="center">:</td>
+      <td width="3%" align="right">RM</td>
+      <td align="right" width="13%">'.$new_personal_bonus.'</td>
      </tr>
+     
      <tr>
       <td>Group Sales</td>
-      <td align="center" width="1%">:</td>';
-      
-      $html .= '
-      <td>&nbsp;&nbsp;RM '.$group_bonus.'</td>
+      <td align="center">:</td>
+      <td width="3%" align="right">RM</td>
+      <td align="right">'.$group_bonus.'</td>
+      <td>&nbsp;</td>
       <td>Group Bonus</td>
-      <td align="center" width="1%">:</td>
-      <td>&nbsp;&nbsp;RM '.$new_group_sales_bonus.'</td>
+      <td align="center">:</td>
+      <td width="3%" align="right">RM</td>
+      <td align="right">'.$new_group_sales_bonus.'</td>
      </tr>
+     
      <tr>
       <td>Accumulated Sales</td>
-      <td align="center" width="1%">:</td>
-      <td>&nbsp;&nbsp;RM '.$accumulated_profit.'</td>
+      <td align="center">:</td>
+      <td width="3%" align="right">RM</td>
+      <td align="right">'.$accumulated_profit.'</td>
+      <td>&nbsp;</td>
       <td>Misc</td>
-      <td align="center" width="1%">:</td>
-      <td>&nbsp;&nbsp; - RM '.$miscellaneous.'</td>
+      <td align="center">:</td>
+      <td width="3%" align="right">RM</td>
+      <td align="right">'.$miscellaneous.'</td>
      </tr>
+     <tr><td>&nbsp;</td></tr>
      <tr>
       <td>&nbsp;</td>
-     </tr>
-     <tr>
+      <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
       <td align="right">Total Bonus&nbsp;</td>
-      <td align="center" width="1%">:</td>
-      <td>&nbsp;&nbsp;RM '.$total_bonus.'</td>
+      <td align="center">:</td>
+      <td width="3%" align="right">RM</td>
+      <td align="right">'.$total_bonus.'</td>
      </tr>
      <tr><td>&nbsp;</td></tr>
      <tr><td>&nbsp;</td></tr>
@@ -1447,111 +1484,444 @@ class SalesController extends AdminAppController
       <td align="center"><b>Sales</b></td>
       <td align="center" width="5%"><b>%</b></td>
       <td align="center"><b>Bonus</b></td>
-      <td width="8%">&nbsp;</td>
      </tr>
      </table>
      
      <table width="100%" cellpadding="1" cellspacing="0" border="0" >
-      <tr><td colspan="7">&nbsp;</td></tr>
-      <tr><td colspan="7" align="left"><b>Personal Sales</b></td></tr>
-     <tr><td colspan="7">&nbsp;</td></tr>';
+      <tr><td colspan="9">&nbsp;</td></tr>
+      <tr>
+       <td align="center" width="20%"><b>Personal Sales</b></td>
+       <td colspan="8">&nbsp;</td>
+      </tr>
+      <tr><td colspan="9">&nbsp;</td></tr>';
      
      $this->contRowDisplay($html,$direct_profits,$page_break);
      
      $html .= '
      </table>
-     <table width="100%" cellpadding="1" cellspacing="0" border="0" >
+     <table width="100%" cellpadding="1" cellspacing="0" border="0">
      <tr><td colspan="7">&nbsp;</td></tr>
      <tr><td colspan="7" align="left"><b>Group Sales</b></td></tr>
-     <tr><td colspan="7">&nbsp;</td></tr>';
-          
-     $html .= '
-     <tr>
-      <td align="center" width="20%">Level 1</td>
-      <td align="center" width="20%">RM '.$member_commission_info['MemberCommission']['level_1'].'</td>
-      <td align="center" width="20%"></td>
-      <td align="center"></td>
-      <td align="center" width="5%">'.$hierarchy['Hierarchy']['level_1'].'%</td>
-      <td align="center">RM '.$group_sales_bonus_1.'</td>
-      <td width="8%"></td>
-     </tr>
      <tr><td colspan="7">&nbsp;</td></tr>
+   
+     <tr>
+      <td width="30%" align="center">Level 1</td>
+      <td width="1%"></td>
+      <td width="3%" align="right">RM</td>
+      <td width="13%" align="right">'.$member_commission_info['MemberCommission']['level_1'].'</td>
+      <td width="29.5%" align="center">&nbsp;</td>
+      <td width="5%" align="center">'.$hierarchy['Hierarchy']['level_1'].'%</td>
+      <td width="5.8%" align="right">RM</td>
+      <td width="12.6%" align="right">'.$group_sales_bonus_1.'</td>
+     </tr>';
+     
+     $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'field' => array('DISTINCT member_id'),
+        'conditions' => array(
+                   'level_1' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
+                   ),
+        'group' => array('member_id')
+       )
+     );
+     
+      
+     $previous_sponsor_member_id = 0;
+     foreach($group_member_info as $member_index => $group_member)
+     {
+       if(empty($group_member['PaidContributor']['level_1']))
+       {
+        continue;
+       }
+
+       $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
+       
+       
+       $html .= '
+       <tr>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="1%"></td>
+        <td width="3%" align="right"></td>
+        <td width="13%" align="right"></td>
+        <td width="29.5%" align="center">&nbsp;</td>
+        <td width="5%" align="center"></td>
+        <td width="5.8%" align="right"></td>
+        <td width="12.6%" align="right"></td>
+       </tr>';
+     
+     }
+     
+     $html .= '<tr><td colspan="7">&nbsp;</td></tr>
      
      <tr>
-      <td align="center" width="20%">Level 2</td>
-      <td align="center" width="20%">RM '.$member_commission_info['MemberCommission']['level_2'].'</td>
-      <td align="center" width="20%"></td>
-      <td align="center"></td>
-      <td align="center" width="5%">'.$hierarchy['Hierarchy']['level_2'].'%</td>
-      <td align="center">RM '.$group_sales_bonus_2.'</td>
-      <td width="8%"></td>
-     </tr>
-     <tr><td colspan="7">&nbsp;</td></tr>
+      <td width="30%" align="center">Level 2</td>
+      <td width="1%"></td>
+      <td width="3%" align="right">RM</td>
+      <td width="13%" align="right">'.$member_commission_info['MemberCommission']['level_2'].'</td>
+      <td width="29.5%" align="center">&nbsp;</td>
+      <td width="5%" align="center">'.$hierarchy['Hierarchy']['level_2'].'%</td>
+      <td width="5.8%" align="right">RM</td>
+      <td width="12.6%" align="right">'.$group_sales_bonus_2.'</td>
+     </tr>';
+     
+     $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'field' => array('DISTINCT member_id'),
+        'conditions' => array(
+                   'level_2' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
+                   ),
+        'group' => array('member_id')
+       )
+     );
+     
+     
+     $previous_sponsor_member_id = 0;
+     foreach($group_member_info as $member_index => $group_member)
+     {
+       if(empty($group_member['PaidContributor']['level_2']))
+       {
+        continue;
+       }
+
+       $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
+       
+       $html .= '
+       <tr>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="1%"></td>
+        <td width="3%" align="right"></td>
+        <td width="13%" align="right"></td>
+        <td width="29.5%" align="center">&nbsp;</td>
+        <td width="5%" align="center"></td>
+        <td width="5.8%" align="right"></td>
+        <td width="12.6%" align="right"></td>
+       </tr>';
+     
+     }
+     
+     $html .= '<tr><td colspan="7">&nbsp;</td></tr>
      
      <tr>
-      <td align="center" width="20%">Level 3</td>
-      <td align="center" width="20%">RM '.$member_commission_info['MemberCommission']['level_3'].'</td>
-      <td align="center" width="20%"></td>
-      <td align="center"></td>
-      <td align="center" width="5%">'.$hierarchy['Hierarchy']['level_3'].'%</td>
-      <td align="center">RM '.$group_sales_bonus_3.'</td>
-      <td width="8%"></td>
-     </tr>
-     <tr><td colspan="7">&nbsp;</td></tr>
+      <td width="30%" align="center">Level 3</td>
+      <td width="1%"></td>
+      <td width="3%" align="right">RM</td>
+      <td width="13%" align="right">'.$member_commission_info['MemberCommission']['level_3'].'</td>
+      <td width="29.5%" align="center">&nbsp;</td>
+      <td width="5%" align="center">'.$hierarchy['Hierarchy']['level_3'].'%</td>
+      <td width="5.8%" align="right">RM</td>
+      <td width="12.6%" align="right">'.$group_sales_bonus_3.'</td>
+     </tr>';
+     
+    $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'field' => array('DISTINCT member_id'),
+        'conditions' => array(
+                   'level_3' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
+                   ),
+        'group' => array('member_id')
+       )
+     );
+     
+     $previous_sponsor_member_id = 0;
+     foreach($group_member_info as $member_index => $group_member)
+     {
+       if(empty($group_member['PaidContributor']['level_3']))
+       {
+        continue;
+       }
+
+       $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
+       
+       $html .= '
+       <tr>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="1%"></td>
+        <td width="3%" align="right"></td>
+        <td width="13%" align="right"></td>
+        <td width="29.5%" align="center">&nbsp;</td>
+        <td width="5%" align="center"></td>
+        <td width="5.8%" align="right"></td>
+        <td width="12.6%" align="right"></td>
+       </tr>';
+     
+     }
+     
+     $html .= '<tr><td colspan="7">&nbsp;</td></tr>
      
      <tr>
-      <td align="center" width="20%">Level 4</td>
-      <td align="center" width="20%">RM '.$member_commission_info['MemberCommission']['level_4'].'</td>
-      <td align="center" width="20%"></td>
-      <td align="center"></td>
-      <td align="center" width="5%">'.$hierarchy['Hierarchy']['level_4'].'%</td>
-      <td align="center">RM '.$group_sales_bonus_4.'</td>
-      <td width="8%"></td>
-     </tr>
-     <tr><td colspan="7">&nbsp;</td></tr>
+      <td width="30%" align="center">Level 4</td>
+      <td width="1%"></td>
+      <td width="3%" align="right">RM</td>
+      <td width="13%" align="right">'.$member_commission_info['MemberCommission']['level_4'].'</td>
+      <td width="29.5%" align="center">&nbsp;</td>
+      <td width="5%" align="center">'.$hierarchy['Hierarchy']['level_4'].'%</td>
+      <td width="5.8%" align="right">RM</td>
+      <td width="12.6%" align="right">'.$group_sales_bonus_4.'</td>
+     </tr>';
+     
+     $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'field' => array('DISTINCT member_id'),
+        'conditions' => array(
+                   'level_4' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
+                   ),
+        'group' => array('member_id')
+       )
+     );
+     
+     $previous_sponsor_member_id = 0;
+     foreach($group_member_info as $member_index => $group_member)
+     {
+       if(empty($group_member['PaidContributor']['level_4']))
+       {
+        continue;
+       }
+
+       $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
+       
+       $html .= '
+       <tr>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="1%"></td>
+        <td width="3%" align="right"></td>
+        <td width="13%" align="right"></td>
+        <td width="29.5%" align="center">&nbsp;</td>
+        <td width="5%" align="center"></td>
+        <td width="5.8%" align="right"></td>
+        <td width="12.6%" align="right"></td>
+       </tr>';
+     
+     }
+     
+     $html .= '<tr><td colspan="7">&nbsp;</td></tr>
      
      <tr>
-      <td align="center" width="20%">Level 5</td>
-      <td align="center" width="20%">RM '.$member_commission_info['MemberCommission']['level_5'].'</td>
-      <td align="center" width="20%"></td>
-      <td align="center"></td>
-      <td align="center" width="5%">'.$hierarchy['Hierarchy']['level_5'].'%</td>
-      <td align="center">RM '.$group_sales_bonus_5.'</td>
-      <td width="8%"></td>
-     </tr>
-     <tr><td colspan="7">&nbsp;</td></tr>
+      <td width="30%" align="center">Level 5</td>
+      <td width="1%"></td>
+      <td width="3%" align="right">RM</td>
+      <td width="13%" align="right">'.$member_commission_info['MemberCommission']['level_5'].'</td>
+      <td width="29.5%" align="center">&nbsp;</td>
+      <td width="5%" align="center">'.$hierarchy['Hierarchy']['level_5'].'%</td>
+      <td width="5.8%" align="right">RM</td>
+      <td width="12.6%" align="right">'.$group_sales_bonus_5.'</td>
+     </tr>';
+     
+    $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'field' => array('DISTINCT member_id'),
+        'conditions' => array(
+                   'level_5' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
+                   ),
+        'group' => array('member_id')
+       )
+     );
+     
+     $previous_sponsor_member_id = 0;
+     foreach($group_member_info as $member_index => $group_member)
+     {
+       if(empty($group_member['PaidContributor']['level_5']))
+       {
+        continue;
+       }
+
+       $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
+       
+       $html .= '
+       <tr>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="1%"></td>
+        <td width="3%" align="right"></td>
+        <td width="13%" align="right"></td>
+        <td width="29.5%" align="center">&nbsp;</td>
+        <td width="5%" align="center"></td>
+        <td width="5.8%" align="right"></td>
+        <td width="12.6%" align="right"></td>
+       </tr>';
+     
+     }
+     
+     $html .= '<tr><td colspan="7">&nbsp;</td></tr>
      
      <tr>
-      <td align="center" width="20%">Level 6</td>
-      <td align="center" width="20%">RM '.$member_commission_info['MemberCommission']['level_6'].'</td>
-      <td align="center" width="20%"></td>
-      <td align="center"></td>
-      <td align="center" width="5%">'.$hierarchy['Hierarchy']['level_6'].'%</td>
-      <td align="center">RM '.$group_sales_bonus_6.'</td>
-      <td width="8%"></td>
-     </tr>
-     <tr><td colspan="7">&nbsp;</td></tr>
+      <td width="30%" align="center">Level 6</td>
+      <td width="1%"></td>
+      <td width="3%" align="right">RM</td>
+      <td width="13%" align="right">'.$member_commission_info['MemberCommission']['level_6'].'</td>
+      <td width="29.5%" align="center">&nbsp;</td>
+      <td width="5%" align="center">'.$hierarchy['Hierarchy']['level_6'].'%</td>
+      <td width="5.8%" align="right">RM</td>
+      <td width="12.6%" align="right">'.$group_sales_bonus_6.'</td>
+     </tr>';
+     
+    $group_member_info =$this->PaidContributor->find('all',
+       array
+       (
+        'field' => array('DISTINCT member_id'),
+        'conditions' => array(
+                   'level_6' => $member_info['Member']['member_id'],
+                   'DATE_FORMAT(target_month,"%Y%m%d") >= ' => date("Ymd",strtotime($default_period_start)),
+                   'DATE_FORMAT(target_month,"%Y%m%d") <= ' => date("Ymd",strtotime($default_period_until))
+                   ),
+        'group' => array('member_id')
+       )
+     );
+     
+     $previous_sponsor_member_id = 0;
+     foreach($group_member_info as $member_index => $group_member)
+     {
+       if(empty($group_member['PaidContributor']['level_6']))
+       {
+        continue;
+       }
+
+       $conditions = array('member_id'=>trim($group_member['PaidContributor']['member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+
+       $conditions = array('member_id'=>trim($group_name_info['Member']['sponsor_member_id']));
+       $group_name_info = $this->Member->find('first',array('conditions'=>$conditions));
+       
+       if($previous_sponsor_member_id == $group_name_info['Member']['member_id'])
+       {
+         continue;
+       }
+       else
+       {
+        $previous_sponsor_member_id = $group_name_info['Member']['member_id'];
+       }
+       
+       $html .= '
+       <tr>
+        <td width="30%" align="center">'.ucwords(strtolower($group_name_info['Member']['name'])).'</td>
+        <td width="1%"></td>
+        <td width="3%" align="right"></td>
+        <td width="13%" align="right"></td>
+        <td width="29.5%" align="center">&nbsp;</td>
+        <td width="5%" align="center"></td>
+        <td width="5.8%" align="right"></td>
+        <td width="12.6%" align="right"></td>
+       </tr>';
+     
+     }
+     
+     $html .= '<tr><td colspan="7">&nbsp;</td></tr>
      
      <tr>
       <td align="center"></td>
+      <td></td>
       <td></td>
       <td align="center"></td>
       <td align="right" colspan="2"> <b>Grand Bonus (RM)</b> </td>
-      <td align="center"><b>RM '.$total_bonus_without_deduction.'</b></td>
-      <td></td>
-     </tr> 
-     </table>';
+      <td align="right">RM</td>
+      <td align="right"><b>'.$total_bonus_without_deduction.'</b></td>
+     </tr>
+     <tr><td colspan="7">&nbsp;</td></tr>';
 
-     $page_break+=1;
+     if(isset($remark) && strlen($remark) > 0)
+   	 {	
+   	 $html .='
+        <tr>
+         <td align="center"></td>
+         <td align="left" colspan="6"> <b>Misc</b>'.$remark.' </td>
+         <td></td>
+        </tr>';
+    	}
      
-     // output the HTML content
-    $pdf->writeHTML($html, true, 0, true, true);
+     $html .= '</table>';
+     $page_break+=1;
 
+     // output the HTML content
+     $pdf->writeHTML($html, true, 0, true, true);
+     
    }//end while;
-    
+   
+   
+   //============================================================+
+   // END OF FILE
+   //============================================================+ 
+
    if(end($group_of_member) == $group_of_member[$position])
    {
-    $pdf->Output('s.pdf', 'I');
+    $pdf->Output('monthly_report.pdf', 'I');
    }
    else
    {
@@ -1560,10 +1930,70 @@ class SalesController extends AdminAppController
     
  }
  
- 
  /**
   * @Objective : To continously display table row..
   **/
+ function contRowDisplay(&$html,$direct_profits,$page_break,$start_loop=0,$prev_member_id=null,$prev_target_month=null,$prev_insurance_paid=null)
+ {
+ 
+  if(!isset($direct_profits[$start_loop]['ViewSaleReport']['total_payment']) | (($start_loop)%25) == 24 )
+  {
+   return $html;
+  }
+    
+  if($page_break > 0)
+  {
+   if($start_loop < 1)
+   {
+    $start_loop = ((($page_break*25))-1);
+   }
+  }
+    
+  if(!isset($prev_member_id,$prev_target_month,$prev_insurance_paid))
+  {
+   $prev_member_id = $direct_profits[$start_loop]['ViewSaleReport']['member_id'];
+   $prev_target_month = $direct_profits[$start_loop]['ViewSaleReport']['target_month'];
+   $prev_insurance_paid = $direct_profits[$start_loop]['ViewSaleReport']['total_payment'];  
+  }
+  else
+  {
+    
+    //If next records is the same then loop again until it's not the same.
+    if(
+    $prev_member_id == $direct_profits[$start_loop]['ViewSaleReport']['member_id'] && 
+    $prev_target_month == $direct_profits[$start_loop]['ViewSaleReport']['target_month'] && 
+    $prev_insurance_paid == $direct_profits[$start_loop]['ViewSaleReport']['total_payment'])
+    {
+     return $this->contRowDisplay($html,$direct_profits,$page_break,$start_loop+=1,$prev_member_id,$prev_target_month,$prev_insurance_paid);
+    }
+    else
+    {
+     $prev_member_id = $direct_profits[$start_loop]['ViewSaleReport']['member_id'];
+     $prev_target_month = $direct_profits[$start_loop]['ViewSaleReport']['target_month'];
+     $prev_insurance_paid = $direct_profits[$start_loop]['ViewSaleReport']['total_payment'];
+    }
+  }
+  
+  $html .= '
+  <tr>
+   <td align="center" width="20%">'.$direct_profits[$start_loop]['ViewSaleReport']['member_id'].'</td>
+   <td width="20%">'.ucwords(strtolower($direct_profits[$start_loop]['ViewSaleReport']['child_name'])).'</td>
+   <td align="center" width="20%">'.$direct_profits[$start_loop]['ViewSaleReport']['target_month'].'</td>
+   <td width="3%">RM</td>
+   <td width="13.5%" align="right">'.number_format($direct_profits[$start_loop]['ViewSaleReport']['total_payment'], 2, '.', ',').'&nbsp;</td>
+   <td align="center" width="5.5%">15%</td>
+   <td width="2.5%">&nbsp;</td>
+   <td width="3%">RM</td>
+   <td align="right" width="12.5%">'.number_format((0.15*$direct_profits[$start_loop]['ViewSaleReport']['total_payment']), 2, '.', ',').'</td>
+  </tr>';
+  
+  return $this->contRowDisplay($html,$direct_profits,$page_break,$start_loop+=1,$prev_member_id,$prev_target_month,$prev_insurance_paid);
+  
+ }
+ 
+ /**
+  * @Objective : To continously display table row..
+  *
  function contRowDisplay(&$html,$direct_profits,$page_break,$start_loop=0)
  {
  
@@ -1593,7 +2023,7 @@ class SalesController extends AdminAppController
   
   return $this->contRowDisplay($html,$direct_profits,$page_break,$start_loop+=1);
   
- }
+ }*/
  
  // ------------------------------------------------------------------------------------------------------------------------------------------------------
  

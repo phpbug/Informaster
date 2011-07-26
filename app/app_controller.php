@@ -16,6 +16,7 @@ class AppController extends Controller
                          'ViewSaleReport',
                          'Nationality',
                          'BroughtOverManagement',
+                         'PaidContributor',
                          'Bank',
                          'User'
                          );

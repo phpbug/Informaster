@@ -168,7 +168,14 @@ class Member extends AppModel
     'message' => '* User are not allow to set him/herself as downline',
     'last' => true,
     'required'=> true
-   )
+   ),
+   'rule-sponsor_member_id-3' => array(
+    'rule' => 'isExistingSponsor',
+    'message' => '* Please enter existing pioneer.',
+    'last' => true,
+    'required'=> true
+   ),
+   
   ),
   'nationality_id' => array(
    'rule'=>'notEmpty',
@@ -188,17 +195,19 @@ class Member extends AppModel
     'rule' => 'numeric',
     'message' => '* Please insert only digit into member id',
     'last' => true
-   ),/*
+   ),
+   
    'rule-member_id-2' => array(
     'rule' => 'isUnique',
     'message' => '* There is already an exiting member id which is same',
     'last' => true
-   ),*/
+   ),
+   /*
    'rule-member_id-3' => array(
     'rule' => 'strictDigitOnly',
     'message' => '* Please insert member id in the length of 10',
     'last' => true
-   ),
+   ),*/
    'rule-member_id-4' => array(
     'rule' => 'isPolicyTheSame',
     'message' => '* User are not allow to set him/herself as downline',
@@ -464,6 +473,45 @@ class Member extends AppModel
   return true;
  
  }
+ 
+ function isExistingSponsor($value)
+ {
+  if(empty($value['sponsor_member_id']))
+  {
+    return false;
+  }
+  
+  //1. check for pioneer
+  //2. check for member being sponsor
+  if(strtoupper($value['sponsor_member_id']{0}) == 'P')
+  {
+    $query = 'SELECT 
+               count(member_id) as occurance 
+              FROM 
+               pioneers  
+              WHERE 
+               LOWER(member_id) = "'.strtolower($value['sponsor_member_id']).'" ';
+               
+    $count = $this->query($query);
+
+    if($count[0][0]['occurance'] > 0)
+    {
+     return true;
+    }
+  }
+  else
+  {
+    $_conditions = array('member_id'=>strtolower($value['sponsor_member_id']));
+    $count = $this->find('count',array('conditions'=>$_conditions)); 
+    if($count > 0)
+    {
+     return true;
+    }
+  }
+  
+  return false;
+ }
+ 
  
  function isStringNDigit($value)
  {

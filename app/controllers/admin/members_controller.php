@@ -328,12 +328,12 @@ class MembersController extends AdminAppController
                       'nationality_id',
                       'sponsor_member_id');
                       
-   if(isset($this->data['Member']['sponsor_member_id']))
+   if(!empty($this->data['Member']['sponsor_member_id']))
    {
      $this->data['Member']['sponsor_member_id'] = strtoupper($this->data['Member']['sponsor_member_id']);
    }                      
                          
-   if(isset($this->data['Member']['race']) == 'others')
+   if(!empty($this->data['Member']['race']) && strtolower($this->data['Member']['race']) == 'others')
    {
      array_push($fieldList,'race');
    }
@@ -467,33 +467,63 @@ function admin_edit($id=null)
    
  		$fieldList = array('name',
                       //'address',
-                      'contact_number_hp',
                       'nationality_id'
                       );
                       
-   $member_existing_ic = $this->Member->findById($id,array('new_ic_num'));
-   
-   if(isset($this->data['Member']['race']) == 'others')
+   if(ctype_digit($id) && !empty($id))
    {
-     array_push($fieldList,'race');
-   }
    
-   if(isset($this->data['Member']['member_id']) && strlen($this->data['Member']['member_id']) > 0)
-   {
-    array_push($fieldList,'member_id');
-   }
+    $this->data['Member']['id'] = $id;
+    $prev_conditions = array('Member.id'=>$id);
+    $prev_member_info = $this->Member->find('first',array('conditions' => $prev_conditions ));
+    
+    //----------------------------------------------------------------------------------------
+    
+    if(strlen($this->data['Member']['member_id']) > 0)
+    {
+      array_push($fieldList,'member_id');
+    }
+    else
+    {
+     if($prev_member_info['Member']['member_id'] <> $this->data['Member']['member_id'])
+     {
+      array_push($fieldList,'member_id');  
+     }
+    }
+    
+    //----------------------------------------------------------------------------------------
+    
+    if(!empty($this->data['Member']['sponsor_member_id']) && strlen($this->data['Member']['sponsor_member_id']) == 10)
+    {
+     if($prev_member_info['Member']['sponsor_member_id'] <> $this->data['Member']['sponsor_member_id'])
+     {
+      array_push($fieldList,'sponsor_member_id');
+     }
+     $this->data['Member']['sponsor_member_id'] = strtoupper($this->data['Member']['sponsor_member_id']);
+    }
+    else
+    {
+     array_push($fieldList,'sponsor_member_id'); 
+    }
+    
+    //----------------------------------------------------------------------------------------
+    
+    if(str_replace('-','',$this->data['Member']['new_ic_num']) <> str_replace('-','',$this->data['Member']['sponsor_member_id']))
+    {
+      array_push($fieldList,'new_ic_num');
+    }
+    
+    //----------------------------------------------------------------------------------------
    
-   if(isset($this->data['Member']['sponsor_member_id']) && strlen($this->data['Member']['sponsor_member_id']) > 0)
-   {
-    array_push($fieldList,'sponsor_member_id');
-    $this->data['Member']['sponsor_member_id'] = strtoupper($this->data['Member']['sponsor_member_id']);
+    if(isset($this->data['Member']['race']) == 'others')
+    {
+      array_push($fieldList,'race');
+    }
+    
+    //----------------------------------------------------------------------------------------
+        
    }
-   
-   if(str_replace('-','',$this->data['Member']['new_ic_num']) <> str_replace('-','',$member_existing_ic['Member']['new_ic_num']))
-   {
-     array_push($fieldList,'new_ic_num');
-   }
-   
+                      
    if(!empty($this->data['Member']['contact_number_hp']) && strlen($this->data['Member']['contact_number_hp']) > 0)
    {
      array_push($fieldList,'contact_number_hp');  
@@ -504,6 +534,7 @@ function admin_edit($id=null)
      array_push($fieldList,'contact_number_house');
    }
    
+   //If both is empty , can not. Must either one is true
    if(empty($this->data['Member']['contact_number_hp']) && empty($this->data['Member']['contact_number_house']))
    {
      array_push($fieldList,'contact_number_hp');  
@@ -523,13 +554,6 @@ function admin_edit($id=null)
    
    if($this->Member->validates(array('fieldList' => $fieldList)))
    {
-    
-    if(ctype_digit($id) && !empty($id))
-    {
-     $this->data['Member']['id'] = $id;
-     $conditions = array('Member.id'=>$id);
-     $prev_member_info = $this->Member->find('first',array('conditions'=>$conditions));  
-    }
     
     if(!empty($this->data['Member']['created'])):
      $this->data['Member']['created'] = date('Y-m-d',strtotime($this->data['Member']['created']));
@@ -551,7 +575,22 @@ function admin_edit($id=null)
 
      if(date("Ymd",strtotime($this->data['Member']['created'])) <> date("Ymd",strtotime($prev_member_info['Member']['created'])))
      {
-      $this->setBroughtOver($this->data);
+      
+      //Delete previous data in brought over management
+      $conditions = array(
+      'BroughtOverManagement.member_id' => $prev_member_info['Member']['member_id'], 
+      'DATE_FORMAT(BroughtOverManagement.joined_in_date,"%Y%m%d")'=> date("Ymd",strtotime($prev_member_info['Member']['created']))
+      );
+      
+      if($this->BroughtOverManagement->deleteAll($conditions))
+      {
+       $this->setBroughtOver($this->data);
+      }
+      else
+      {
+       $this->log('unable to delete brought over management member id LINE :: '.__LINE__.' FILE :: '.__FILE__);
+      }
+      
      }
      // -----------------------------------------------------------------------------------------------     
      
@@ -571,7 +610,8 @@ function admin_edit($id=null)
   $this->set('nationality',$this->Nationality->find('list',array('fields'=>'nationality')));
 }
 
- function setBroughtOver(&$member_info)
+                         
+ function setBroughtOver($member_info)
  {
   
   if(empty($member_info['Member']['sponsor_member_id']) | empty($member_info['Member']['member_id']) )
@@ -584,204 +624,148 @@ function admin_edit($id=null)
    return false;
   }
   
+  //------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  //if(!$calledback)
+  //{
 
-  $configuration = $this->getSystemCalculationDate();
-  $date_start = date('d',strtotime($configuration['default_start_date']));
-  $date_end   = date('d',strtotime($configuration['default_until_date']));
-  $current_date_joined = date("d",strtotime($member_info['Member']['created']));
-  $current_month_joined = date("m",strtotime($member_info['Member']['created']));
-  $current_year_joined = date("Y",strtotime($member_info['Member']['created']));
+    $configuration = $this->getSystemCalculationDate();
+    $date_start = date('d',strtotime($configuration['default_start_date']));
+    $date_end   = date('d',strtotime($configuration['default_until_date']));
+    $current_date_joined = date("d",strtotime($member_info['Member']['created']));
+    $current_month_joined = date("m",strtotime($member_info['Member']['created']));
+    $current_year_joined = date("Y",strtotime($member_info['Member']['created']));
    
-  if($current_date_joined <= $date_end)//if is not a new member meaning the date join is fixed the increment
-  {
-    $default_start_date = date("Ymd",mktime(0,0,0,($current_month_joined-1),$date_start,$current_year_joined));
-    $default_until_date = date("Ymd",mktime(0,0,0,($current_month_joined),$date_end,$current_year_joined)); 
-  }
-  else
-  {
-    $default_start_date = date("Ymd",mktime(0,0,0,$current_month_joined,$date_start,$current_year_joined));
-    $default_until_date = date("Ymd",mktime(0,0,0,($current_month_joined+1),$date_end,$current_year_joined));    
-  }
-   
-  // --------------------------------------------------------------------------------------------------------------
-  //Insert into BroughtOverManagement
-  
-  $conditions = array(
-                      'sponsor_member_id'=>$member_info['Member']['sponsor_member_id'],
-                      'member_id'=>$member_info['Member']['member_id']
-                     );
-                     
-  $BroughtOverManagement = $this->BroughtOverManagement->find('first',array('conditions'=>$conditions));
-  
-  if(isset($BroughtOverManagement[0]))
-  {
-   $BroughtOverManagement = array_shift($BroughtOverManagement);
-  }
-  
-  $BroughtOverManagement['BroughtOverManagement']['sponsor_member_id'] = $member_info['Member']['sponsor_member_id'];
-  $BroughtOverManagement['BroughtOverManagement']['member_id'] = $member_info['Member']['member_id']; 
-  $BroughtOverManagement['BroughtOverManagement']['default_period_start'] = date("Y-m-d",strtotime($default_start_date));
-  $BroughtOverManagement['BroughtOverManagement']['default_period_until'] = date("Y-m-d",strtotime($default_until_date));
-  
-  $this->BroughtOverManagement->create();
-  if($this->BroughtOverManagement->save($BroughtOverManagement,false))
-  {
-   return true;
-  }  
-  
-  return false;
-}
-		
- /*
- function setBackBroughtOver($member_info)
- {
-   $conditions = array('BroughtOverManagement.member_id'=>$member_info['Member']['member_id']);
-   if(!$this->BroughtOverManagement->deleteAll($conditions))
-   {
-    $this->log('unable to remove user from brought over management table');
-    return false;
-   }
-   
-   return true;  
- }
- */
-
- /*
- function updateSetBroughtOver($member_info,$prev_member_info)
- {
-   
-  $current_joined_date  = date("Ymd",strtotime($member_info['Member']['created']));
-  $previous_joined_date = date("Ymd",strtotime($prev_member_info['Member']['created']));  
-  
-  if($current_joined_date == $previous_joined_date)//only allow date not same enter the rest of the portion of codes
-  {
-   return false;
-  }
-  
-  //If the current date and joined date not same then
-  $fields = array('id','sponsor_member_id','member_id','default_period_start','default_period_until');
-  $conditions = array(
-                      'sponsor_member_id'=>$member_info['Member']['sponsor_member_id'],
-                      'DATE_FORMAT(default_period_start,"%Y%m%d") >=' => $current_joined_date 
-                     );
-                      
-  $broughtOverManagement = $this->BroughtOverManagement->find('all',array('conditions'=>$conditions,'fields'=>$fields));
-
-  $current_joined_date  = date("Y-m-d",strtotime($current_joined_date)); 
-  $current_joined_date  = explode("-",$current_joined_date);
-  
-  foreach($broughtOverManagement as $per_records_index => &$per_records)
-  { 
-  
-    $per_records['BroughtOverManagement']['default_period_start'] = date("Y-m-d",mktime(0,0,0,$current_joined_date[1]+$per_records_index,22,$current_joined_date[0]));
-    $per_records['BroughtOverManagement']['default_period_until'] = date("Y-m-d",mktime(0,0,0,$current_joined_date[1]+1+$per_records_index,21,$current_joined_date[0]));
-  
-    $this->BroughtOverManagement->create();
-    $this->BroughtOverManagement->save($per_records,false);
-  }
-  
- }
- */
- /*
- function setBroughtOver(&$member_info,$month_increment=0,$date_start=null,$isNewMember=null)
- {
- 
-  if(empty($member_info['Member']['sponsor_member_id']) | empty($member_info['Member']['member_id']) )
-  {
-   return false;
-  }
-  
-  if(strtoupper($member_info['Member']['sponsor_member_id']{0}) == 'P')
-  {
-   return false;
-  }
-  
-  if(!isset($date_start))
-  {
-   
-   $configuration = $this->getSystemCalculationDate();
-   $date_start = date('d',strtotime($configuration['default_start_date']));
-   
-   //Is it a completely new member?
-   $conditions = array('sponsor_member_id' => $member_info['Member']['sponsor_member_id']);
-   $isNewMember = $this->BroughtOverManagement->find('count',array('conditions'=>$conditions)); 
-  }
-
-  $current_date_joined = date("d",strtotime($member_info['Member']['created']));
-   
-  if(!isset($isNewMember) && $isNewMember > 0 && $current_date_joined >= $date_start)//if is not a new member meaning the date join is fixed the increment
-  {
-    echo '#1';
-    echo '<br />';
-    $default_start_date = date("Ymd",mktime(0,0,0,date("n")+$month_increment,22,date("Y")));
-    $default_until_date = date("Ymd",mktime(0,0,0,(date("n")+1+$month_increment),21,date("Y"))); 
-  }
-  else
-  {
- 
-   if($current_date_joined >= $date_start) 
-   {
-    echo '#2';
-    echo '<br />';
-    $default_start_date = date("Ymd",mktime(0,0,0,date("n"),22,date("Y")));
-    $default_until_date = date("Ymd",mktime(0,0,0,(date("n")+1),21,date("Y")));
-   }
-   else
-   {
-    if($isNewMember < 1)
+    if($current_date_joined <= $date_end)//if is not a new member meaning the date join is fixed the increment
     {
-     echo '#3';
-     echo '<br />';
-     $default_start_date = date("Ymd",mktime(0,0,0,date("n")+$month_increment,22,date("Y")));
-      $default_until_date = date("Ymd",mktime(0,0,0,(date("n")+1+$month_increment),21,date("Y")));
+      $default_start_date = date("Ymd",mktime(0,0,0,($current_month_joined-1),$date_start,$current_year_joined));
+      $default_until_date = date("Ymd",mktime(0,0,0,($current_month_joined),$date_end,$current_year_joined)); 
     }
     else
     {
-      echo '#4';
-      echo '<br />';
-      $default_start_date = date("Ymd",mktime(0,0,0,(date("n")-1-$month_increment),22,date("Y")));
-      $default_until_date = date("Ymd",mktime(0,0,0,(date("n"))-$month_increment,21,date("Y")));
+      $default_start_date = date("Ymd",mktime(0,0,0,$current_month_joined,$date_start,$current_year_joined));
+      $default_until_date = date("Ymd",mktime(0,0,0,($current_month_joined+1),$date_end,$current_year_joined));    
     }
-   }
+        
+  //}
+  
+  //------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  //if(!isset($adv_default_start_date,$adv_default_until_date))
+  //{
+   //Possible using this conditin
+   /**
+    *1. new entry member
+    *2. multiple entry brought in by member along the same period and need to bring the additional member into another period     
+    **/
+  
    
-  }
-  // --------------------------------------------------------------------------------------------------------------
-  //Check for existing month in management
-  
-   $conditions = array('sponsor_member_id' => $member_info['Member']['sponsor_member_id'],
-                       'DATE_FORMAT(default_period_start,"%Y%m%d")' => $default_start_date,
-                       'DATE_FORMAT(default_period_until,"%Y%m%d")' => $default_until_date
-                       );
-                       
-   $management_info = $this->BroughtOverManagement->find('count',array('conditions'=>$conditions));
-                           
-   if($management_info > 0)
-   {
-     return $this->setBroughtOver(&$member_info,$month_increment+=1,$date_start,$isNewMember);
-   }
-     
-  // --------------------------------------------------------------------------------------------------------------
-  //Insert into BroughtOverManagement
-  
-  $BroughtOverManagement['BroughtOverManagement']['sponsor_member_id'] = $member_info['Member']['sponsor_member_id'];
-  $BroughtOverManagement['BroughtOverManagement']['member_id'] = $member_info['Member']['member_id']; 
-  $BroughtOverManagement['BroughtOverManagement']['default_period_start'] = date("Y-m-d",strtotime($default_start_date));
-  $BroughtOverManagement['BroughtOverManagement']['default_period_until'] = date("Y-m-d",strtotime($default_until_date));
-  
-  pr($BroughtOverManagement);
+    //Search for member with period that he/she fall into
+    //--------------------------------------------------------------------------------------------------------------------------------------------
+
+    $__conditions = array(
+     'sponsor_member_id' => $member_info['Member']['sponsor_member_id'],
+     'DATE_FORMAT(period_fall_to_start,"%Y%m%d") >= ' => $default_start_date,
+     'DATE_FORMAT(period_fall_to_end,"%Y%m%d") <= ' =>  $default_until_date
+    );
     
-  if($this->BroughtOverManagement->save($BroughtOverManagement,false))
-  {
-   echo 'Good';
-   echo '<br />';
-   return true;
-  }  
+    $__BroughtOverManagement = $this->BroughtOverManagement->find('first',
+     array(
+      'conditions' => $__conditions,
+      'order' => 'default_period_start DESC'
+      )
+    );
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------
+    
+    //Making sure it's totally new set of fresh data
+    //--------------------------------------------------------------------------------------------------------------------------------------------
+    
+    $_conditions_ = array('sponsor_member_id'=>$member_info['Member']['sponsor_member_id']);
+    $__broughtOverManagement__ = $this->BroughtOverManagement->find('count',array('conditions'=>$_conditions_));//to make sure it's not the only data in table
+    
+    if(!isset($__BroughtOverManagement['BroughtOverManagement']['id']) && $__broughtOverManagement__ <= 0)//completely new
+    {
+      
+       $adv_default_start_date = $default_start_date;
+       $adv_default_until_date = $default_until_date;
+       
+    }
+    
+    //Multiple entry at same period
+    if(isset($__BroughtOverManagement['BroughtOverManagement']['id']) && $__broughtOverManagement__ > 0)
+    {
+      
+       //If it is the first records/fresh
+       $_BroughtOverManagement = $this->BroughtOverManagement->find('first',array('conditions'=>$__conditions,'order'=>'default_period_start DESC'));
+       $adv_default_start_date = explode("-",date("Y-m-d",strtotime($_BroughtOverManagement['BroughtOverManagement']['default_period_start'])));
+       $adv_default_until_date = explode("-",date("Y-m-d",strtotime($_BroughtOverManagement['BroughtOverManagement']['default_period_until']))); 
+       $adv_default_start_date = date("Ymd",mktime(0,0,0,($adv_default_start_date[1]+1),$adv_default_start_date[2],$adv_default_start_date[0]));
+       $adv_default_until_date = date("Ymd",mktime(0,0,0,($adv_default_until_date[1]+1),$adv_default_until_date[2],$adv_default_until_date[0]));
+       
+    }
+    
+    
+    
+    if(!isset($__BroughtOverManagement['BroughtOverManagement']['id']) && $__broughtOverManagement__ > 0)
+    {
+    
+       $adv_default_start_date = $default_start_date;
+       $adv_default_until_date = $default_until_date;
+       
+       $__conditions = array(
+        'sponsor_member_id' => $member_info['Member']['sponsor_member_id'],
+        'DATE_FORMAT(default_period_start,"%Y%m%d") >= ' => $adv_default_start_date,
+        'DATE_FORMAT(default_period_until,"%Y%m%d") <= ' =>  $adv_default_until_date
+       );
+       
+         
+       //If it is the first records/fresh
+       $_BroughtOverManagement___ = $this->BroughtOverManagement->find('first',array('conditions'=>$__conditions,'order'=>'default_period_start DESC'));
+        
+       if(isset($_BroughtOverManagement___['BroughtOverManagement']['sponsor_member_id']))
+       { 
+        
+        //If it is the first records/fresh
+        $_BroughtOverManagement = $this->BroughtOverManagement->find('first',array('conditions'=>$_conditions_,'order'=>'default_period_start DESC'));
+        
+        $adv_default_start_date = explode("-",date("Y-m-d",strtotime($_BroughtOverManagement['BroughtOverManagement']['default_period_start'])));
+        $adv_default_until_date = explode("-",date("Y-m-d",strtotime($_BroughtOverManagement['BroughtOverManagement']['default_period_until']))); 
+        $adv_default_start_date = date("Ymd",mktime(0,0,0,($adv_default_start_date[1]+1),$adv_default_start_date[2],$adv_default_start_date[0]));
+        $adv_default_until_date = date("Ymd",mktime(0,0,0,($adv_default_until_date[1]+1),$adv_default_until_date[2],$adv_default_until_date[0]));
+       } 
+    }
+    
+                                    
+   $BroughtOverManagement['BroughtOverManagement']['sponsor_member_id'] = $member_info['Member']['sponsor_member_id'];
+   $BroughtOverManagement['BroughtOverManagement']['member_id'] = $member_info['Member']['member_id'];
+   
+   
+   //----------------------------------------------------------------------------------------------------------------------------------------
+   
+   if(!isset($adv_default_start_date)){$adv_default_start_date = $default_start_date;}
+   if(!isset($adv_default_until_date)){$adv_default_until_date = $default_until_date;}
+   
+   //----------------------------------------------------------------------------------------------------------------------------------------
+   
+   $BroughtOverManagement['BroughtOverManagement']['default_period_start'] = date("Y-m-d",strtotime($adv_default_start_date));
+   $BroughtOverManagement['BroughtOverManagement']['default_period_until'] = date("Y-m-d",strtotime($adv_default_until_date));  
+   $BroughtOverManagement['BroughtOverManagement']['period_fall_to_start'] = date("Y-m-d",strtotime($default_start_date));
+   $BroughtOverManagement['BroughtOverManagement']['period_fall_to_end'] = date("Y-m-d",strtotime($default_until_date));
+   $BroughtOverManagement['BroughtOverManagement']['joined_in_date'] = date("Y-m-d",strtotime($member_info['Member']['created']));
+   
+   $this->BroughtOverManagement->create();
+   if($this->BroughtOverManagement->save($BroughtOverManagement,false))
+   {
+    return true;
+   }  
+ 
+   return false;
   
-  echo 'Bad';
-  echo '<br />';
-  return false;
-}
-*/
+ }
+
+
+	
 
 
 function admin_ewallet()
@@ -1152,24 +1136,25 @@ function admin_ewallet()
    
    $group_group_of_ids = $this->params['form']['id'];//member unique id
    
-   foreach($group_group_of_ids as $index => $member_unique_id)
+   foreach($group_group_of_ids as $member_unique_id => $member_id)
    {
-    //searching for member's member id
-    $fields = array('Member.member_id');
-    $conditions = array('Member.id'=>$index);
-    $_member_ids = $this->Member->find('first',array('conditions'=>$conditions,'fields'=>$fields));
 
-    if($_member_ids['Member']['member_id']<>"")
+    $fields = array('Member.member_id');
+    $conditions = array('Member.id' => $member_unique_id);
+    $_member_ids = $this->Member->find('first',array('conditions' => $conditions , 'fields' => $fields));
+
+    if($_member_ids['Member']['member_id'] <> "")
     {
-     $group_of_ids = $_member_ids['Member']['member_id'];
-     $this->Member->deleteAll(array('Member.member_id' => $group_of_ids));
-     $this->MemberCommission->deleteAll(array('MemberCommission.member_id' => $group_of_ids));
-     $this->Sale->deleteAll(array('OR'=>array('Sale.member_id' => $index)));//different case...
-     $this->BroughtOverManagement->deleteAll(array('BroughtOverManagement.sponsor_member_id' => $group_of_ids));
+     $member_id = $_member_ids['Member']['member_id'];
+     $this->Member->deleteAll(array('Member.id' => $member_unique_id));
+     $this->MemberCommission->deleteAll(array('MemberCommission.member_id' => $member_id));
+     $this->Sale->deleteAll(array('OR'=>array('Sale.member_id' => $member_unique_id)));//different case...
+     $this->BroughtOverManagement->deleteAll(array('BroughtOverManagement.sponsor_member_id' => $member_id));
+     $this->BroughtOverManagement->deleteAll(array('BroughtOverManagement.member_id' => $member_id));
     }
     else
     {
-     $this->Member->deleteAll(array('Member.id' => $index));
+     $this->Member->deleteAll(array('Member.id' => $member_unique_id));
     }
    }
     

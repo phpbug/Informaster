@@ -102,11 +102,6 @@ a{text-decoration:none;}
 
 #navigation li a:hover { background: #383; cursor:pointer;}
 
-#content-container
-{
-	float: left;
-	width: 100%;
-}
 
 #left-content
 {
@@ -128,10 +123,10 @@ a{text-decoration:none;}
 
 #center-content
 {
-	float: right;
-	clear: right;
-	width: 75%;
-	padding: 20px 0px 0px 10px;
+	/*float: right;
+	clear: right;*/
+	width: 100%;
+	padding: 50px 0px 0px 10px;
 	margin: 0;
 	/*font-size:12px;*/
 	/*font-family:Arial, Helvetica, sans-serif;*/
@@ -447,7 +442,7 @@ a{text-decoration:none;}
 #breadcrumbs ul
 {
 	float:left;
-	clear:left;
+	clear:both;
 	margin:0px;
 	padding:0px;
 }
